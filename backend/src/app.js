@@ -1,34 +1,33 @@
-// app.js
 const express = require('express');
-const db = require('./db');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+const userModel = require('./models/user.model');
+const userRouter = require('./router/user.route');
+
+dotenv.config({ path: './.env' });
 
 const app = express();
+const port = process.env.PORT;
+const mongodbUri = process.env.MONGODB_URI;
+
+//midleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// Define routes
+app.use('/api/users', userRouter);
 
-// Kiểm tra kết nối cơ sở dữ liệu
-db.getConnection()
-  .then(() => {
-    console.log('Database connected successfully');
-  })
-  .catch(err => {                 
-    console.error('Connection error:', err);
-  });  
-   
-
-// Route lấy danh sách users từ bảng đã tạo trong init.sql
-app.get('/', async (req, res) => {
-  try {
-    const [users] = await db.query('SELECT * FROM users');
-    res.json(users);
-    console.log('Danh sách users:', users);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Lỗi khi lấy danh sách users' });
-  }
+app.get('/', (req, res) => {
+  res.send('Hello World!');
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+mongoose.connect(mongodbUri)
+.then(() => {
+  console.log('Connected to database successfully');
+  app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+}).catch(err => {
+  console.error('Error connecting to database:', err);
 });

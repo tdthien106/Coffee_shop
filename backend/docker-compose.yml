@@ -1,21 +1,12 @@
 services:
   mysql:
     image: mysql:latest
-    container_name: mysql_group2
+    container_name: group2
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: mydb
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: 123456
-    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
     ports:
       - "3306:3306"
-    volumes:
-      - ./db/data:/var/lib/mysql
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - my_network        
-
-networks:
-  my_network:
-    name: my_sql_network
