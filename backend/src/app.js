@@ -1,33 +1,39 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+import express from 'express';
+import dotenv from 'dotenv';
 
-const userModel = require('./models/user.model');
-const userRouter = require('./router/user.route');
+import pool from './config/db.js';
 
-dotenv.config({ path: './.env' });
+dotenv.config(); // Load environment variables
 
 const app = express();
-const port = process.env.PORT;
-const mongodbUri = process.env.MONGODB_URI;
+const port = process.env.PORT || 3000;
 
-//midleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Define routes
-app.use('/api/users', userRouter);
+pool.connect()
+  .then(() => {
+    console.log('✅✅✅Connected to the database successfully');
+    app.listen(port, () => {
+      console.log(`✅✅✅Server is running on http://localhost:${port}`);
+    }); 
+  })
+  .catch(err => {
+    console.error('Database connection error:', err);
+  });
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  pool.query('SELECT NOW()', (err, result) => {
+    if (err) {
+      console.error('Error executing query', err);
+      res.status(500).send('Database query error');
+    } else {
+      res.send(`Current time: ${result.rows[0].now}`);
+    }
+  } );  
 });
 
-mongoose.connect(mongodbUri)
-.then(() => {
-  console.log('Connected to database successfully');
-  app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-}).catch(err => {
-  console.error('Error connecting to database:', err);
+app.post('/', (req, res) => {
+  const { name } = req.body;
+  res.send(`Hello ${name}!`);
 });
