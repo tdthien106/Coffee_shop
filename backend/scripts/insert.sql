@@ -238,3 +238,24 @@ add constraint fk_revenuereport_statistic foreign key(statisticID) references Re
 alter table SystemSettings_Admin
 add constraint fk_systemadmin_settings foreign key (systemID) references SystemSettings(systemID),
     constraint fk_systemadmin_admin foreign key (userID) references "Admin"(userID)
+
+INSERT INTO Recipe (recipeID, name, servingSize)
+VALUES
+('R004', 'Ca phe den da', 250),
+('R005', 'Ca phe sua da', 250),
+('R006', 'Bac siu', 250),
+('R007', 'Americano', 300);
+
+INSERT INTO Drink (drinkID, name, unit, price, recipeID)
+VALUES
+('D004', 'Ca phe den da', 'ly', 20000, 'R004'),
+('D005', 'Ca phe sua da', 'ly', 25000, 'R005'),
+('D006', 'Bac siu', 'ly', 30000, 'R006'),
+('D007', 'Americano', 'ly', 35000, 'R007');
+
+INSERT INTO MenuItem (itemID, name, category, description, basePrice, cost)
+VALUES
+('D004', 'Ca phe den da', 'Coffee', 'Ca phe pha phin dam dac, da mat lanh, khong sua.', 20000, 5000),
+('D005', 'Ca phe sua da', 'Coffee', 'Ca phe phin ket hop sua dac, da mat lanh.', 25000, 8000),
+('D006', 'Bac siu', 'Coffee', 'Ca phe it, nhieu sua, vi ngot beo dac trung.', 30000, 10000),
+('D007', 'Americano', 'Coffee', 'Espresso pha loang voi nuoc nong, vi nhe.', 35000, 12000);
