@@ -4,238 +4,234 @@ GO
 USE Coffee_Shop4;
 GO
 
-
 -- Step 1: Create all tables (no foreign keys yet)
-CREATE TABLE "User" (
+CREATE TABLE USERS (
     userID VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(100),
+    fullName VARCHAR(100),
     gender VARCHAR(10),
     birthday DATE,
     phoneNumber VARCHAR(20),
     email VARCHAR(100),
     username VARCHAR(50) UNIQUE,
-    password VARCHAR(100)
+    passwordHash VARCHAR(100)
 );
 
-CREATE TABLE Employee (
+CREATE TABLE EMPLOYEES (
     employeeID VARCHAR(50) PRIMARY KEY,
     userID VARCHAR(50),
     startDate DATE,
     endDate DATE,
     position VARCHAR(50),
-    salary  real  
+    salary REAL
+);
 
- );
-
-CREATE TABLE "Shift" (
+CREATE TABLE SHIFTS (
     shiftID VARCHAR(50) PRIMARY KEY,
     startTime DATETIME,
     endTime DATETIME
 );
 
-CREATE TABLE Shift_Employee (
+CREATE TABLE SHIFT_EMPLOYEE (
     shiftID VARCHAR(50),
     employeeID VARCHAR(50),
     PRIMARY KEY (shiftID, employeeID)
 );
 
-CREATE TABLE Manager (
+CREATE TABLE MANAGERS (
     userID VARCHAR(50) PRIMARY KEY
 );
 
-CREATE TABLE Staff (
+CREATE TABLE STAFFS (
     userID VARCHAR(50) PRIMARY KEY,
     totalShifts INT,
     currentShift VARCHAR(50)
 );
 
-CREATE TABLE SystemSettings (
+CREATE TABLE SYSTEMSETTINGS (
     systemID VARCHAR(50) PRIMARY KEY,
     businessName VARCHAR(100),
-    taxRate real,
-    serviceCharge real,
+    taxRate REAL,
+    serviceCharge REAL,
     operatingHours VARCHAR(100)
 );
 
-CREATE TABLE "Admin" (
+CREATE TABLE ADMINS (
     userID VARCHAR(50) PRIMARY KEY,
     adminLevel VARCHAR(50),
     accessRight VARCHAR(100)
 );
 
-CREATE TABLE "Log" (
+CREATE TABLE LOG (
     logID VARCHAR(50) PRIMARY KEY,
     action VARCHAR(255),
-    timestamp DATETIME,
+    actionTime DATETIME,
     effectiveBy VARCHAR(50)
 );
 
-CREATE TABLE MenuItem (
+CREATE TABLE MENUITEM (
     itemID VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(100),
+    itemName VARCHAR(100),
     category VARCHAR(50),
     description TEXT,
-    basePrice real,
-    cost real
+    basePrice REAL,
+    cost REAL
 );
 
-CREATE TABLE Payment (
+CREATE TABLE PAYMENT (
     paymentID VARCHAR(50) PRIMARY KEY,
     orderID VARCHAR(50),
     method VARCHAR(50),
-    amount real,
-    paymentDate DATETIME,
+    amount REAL,
+    paymentDate DATETIME
 );
 
-CREATE TABLE "Order" (
+CREATE TABLE [ORDER] (
     orderID VARCHAR(50) PRIMARY KEY,
     staffID VARCHAR(50),
     createTime DATETIME,
-    status VARCHAR(50),
+    orderStatus VARCHAR(50),
     paymentID VARCHAR(50)
 );
 
-CREATE TABLE Recipe (
+CREATE TABLE RECIPE (
     recipeID VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(100),
-    servingSize real
+    recipeName VARCHAR(100),
+    servingSize REAL
 );
 
-CREATE TABLE Drink (
+CREATE TABLE DRINK (
     drinkID VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(100),
-    unit VARCHAR(20),
-    price real,
+    drinkName VARCHAR(100),
+    unitName VARCHAR(20),
+    price REAL,
     recipeID VARCHAR(50)
 );
 
-CREATE TABLE OrderDetail (
+CREATE TABLE ORDERDETAIL (
     orderDetailID VARCHAR(50) PRIMARY KEY,
     orderID VARCHAR(50),
     drinkID VARCHAR(50),
     quantity INT,
-    discount real,
-    total real
+    discount REAL,
+    total REAL
 );
 
-CREATE TABLE Ingredient (
+CREATE TABLE INGREDIENT (
     ingredientID VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(100),
-    unit VARCHAR(20),
-    unitPrice real,
-    minStock real,
-    currentStock real
+    ingredientName VARCHAR(100),
+    unitName VARCHAR(20),
+    unitPrice REAL,
+    minStock REAL,
+    currentStock REAL
 );
 
-CREATE TABLE Recipe_Ingredient (
+CREATE TABLE RECIPE_INGREDIENT (
     recipeID VARCHAR(50),
     ingredientID VARCHAR(50),
-    quantity real,
+    quantity REAL,
     PRIMARY KEY (recipeID, ingredientID)
 );
 
-CREATE TABLE Stock (
+CREATE TABLE STOCK (
     stockID VARCHAR(50) PRIMARY KEY,
     ingredientID VARCHAR(50),
-    quantity real,
-    unit VARCHAR(20),
+    quantity REAL,
+    unitName VARCHAR(20),
     lastUpdate DATE
 );
 
-CREATE TABLE Salary (
+CREATE TABLE SALARY (
     employeeID VARCHAR(50),
     shiftID VARCHAR(50),
-    baseSalary real,
+    baseSalary REAL,
     PRIMARY KEY (employeeID, shiftID)
 );
 
-CREATE TABLE Report (
+CREATE TABLE REPORT (
     reportID VARCHAR(50) PRIMARY KEY,
-    type VARCHAR(50),
-    content TEXT,
+    reportType VARCHAR(50),
+    reportContent TEXT,
     createdBy VARCHAR(50),
     reportDate DATE,
     generateDate DATE
 );
 
-CREATE TABLE RevenueStatistics (
+CREATE TABLE REVENUESTATISTICS(
     statisticID VARCHAR(50) PRIMARY KEY,
     startDate DATE,
     endDate DATE,
-    totalRevenue real,
+    totalRevenue REAL,
     totalOrders INT
 );
 
-create table RevenueStatistics_Report(
+CREATE TABLE REVENUESTATISTICS_REPORT(
     statisticID VARCHAR(50),
-    reportID VARCHAR(50) ,
-    primary key(statisticID, reportID)
-)
+    reportID VARCHAR(50),
+    PRIMARY KEY (statisticID, reportID)
+);
 
-create table SystemSettings_Admin(
-     userID VARCHAR(50) ,
-     systemID VARCHAR(50)
-     primary key(userID, systemID)
+CREATE TABLE SYSTEMSETTINGS_ADMIN(
+     userID VARCHAR(50),
+     systemID VARCHAR(50),
+     PRIMARY KEY (userID, systemID)
+);
 
-)
+-- Step 2: Add FOREIGN KEY constraints (fixed table & column names)
+ALTER TABLE EMPLOYEES
+ADD CONSTRAINT FK_Employee_User FOREIGN KEY (userID) REFERENCES USERS(userID);
 
--- Step 2: Add FOREIGN KEY constraints
-ALTER TABLE Employee
-ADD CONSTRAINT FK_Employee_User FOREIGN KEY (userID) REFERENCES "User"(userID);
+ALTER TABLE SHIFT_EMPLOYEE
+ADD CONSTRAINT FK_ShiftEmployee_Shift FOREIGN KEY (shiftID) REFERENCES SHIFTS(shiftID),
+    CONSTRAINT FK_ShiftEmployee_Employee FOREIGN KEY (employeeID) REFERENCES EMPLOYEES(employeeID);
 
-ALTER TABLE Shift_Employee
-ADD CONSTRAINT FK_ShiftEmployee_Shift FOREIGN KEY (shiftID) REFERENCES "Shift" (shiftID),
-    CONSTRAINT FK_ShiftEmployee_Employee FOREIGN KEY (employeeID) REFERENCES Employee(employeeID);
+ALTER TABLE MANAGERS
+ADD CONSTRAINT FK_Manager_User FOREIGN KEY (userID) REFERENCES USERS(userID);
 
-ALTER TABLE Manager
-ADD CONSTRAINT FK_Manager_User FOREIGN KEY (userID) REFERENCES "User" (userID);
+ALTER TABLE STAFFS
+ADD CONSTRAINT FK_Staff_User FOREIGN KEY (userID) REFERENCES USERS(userID),
+    CONSTRAINT FK_Staff_CurrentShift FOREIGN KEY (currentShift) REFERENCES SHIFTS(shiftID);
 
-ALTER TABLE Staff
-ADD CONSTRAINT FK_Staff_User FOREIGN KEY (userID) REFERENCES "User" (userID),
- CONSTRAINT FK_Staff_CurrentShift FOREIGN KEY (currentShift) REFERENCES "Shift" (shiftID);
+ALTER TABLE ADMINS
+ADD CONSTRAINT FK_Admin_User FOREIGN KEY (userID) REFERENCES USERS(userID);
 
-ALTER TABLE Admin
-ADD CONSTRAINT FK_Admin_User FOREIGN KEY (userID) REFERENCES "User" (userID);
+ALTER TABLE LOG
+ADD CONSTRAINT FK_Log_User FOREIGN KEY (effectiveBy) REFERENCES USERS(userID);
 
-ALTER TABLE "Log"
-ADD CONSTRAINT FK_Log_User FOREIGN KEY (effectiveBy) REFERENCES "User" (userID);
+ALTER TABLE [ORDER]
+ADD CONSTRAINT FK_Order_Staff FOREIGN KEY (staffID) REFERENCES STAFFS(userID),
+    CONSTRAINT FK_Order_Payment FOREIGN KEY (paymentID) REFERENCES PAYMENT(paymentID);
 
-ALTER TABLE "Order"
-ADD CONSTRAINT FK_Order_Staff FOREIGN KEY (staffID) REFERENCES Staff(userID),
- CONSTRAINT FK_Order_Payment FOREIGN KEY (paymentID) REFERENCES Payment(paymentID);
+ALTER TABLE PAYMENT
+ADD CONSTRAINT FK_Payment_Order FOREIGN KEY (orderID) REFERENCES [ORDER](orderID);
 
-ALTER TABLE Payment
-ADD CONSTRAINT FK_Payment_Order FOREIGN KEY (orderID) REFERENCES "Order"(orderID);
+ALTER TABLE DRINK
+ADD CONSTRAINT FK_Drink_Recipe FOREIGN KEY (recipeID) REFERENCES RECIPE(recipeID);
 
-ALTER TABLE Drink
-ADD CONSTRAINT FK_Drink_Recipe FOREIGN KEY (recipeID) REFERENCES Recipe(recipeID);
+ALTER TABLE ORDERDETAIL
+ADD CONSTRAINT FK_OrderDetail_Order FOREIGN KEY (orderID) REFERENCES [ORDER](orderID),
+    CONSTRAINT FK_OrderDetail_Drink FOREIGN KEY (drinkID) REFERENCES DRINK(drinkID);
 
-ALTER TABLE OrderDetail
-ADD CONSTRAINT FK_OrderDetail_Order FOREIGN KEY (orderID) REFERENCES "Order"(orderID),
- CONSTRAINT FK_OrderDetail_Drink FOREIGN KEY (drinkID) REFERENCES Drink(drinkID);
+ALTER TABLE RECIPE_INGREDIENT
+ADD CONSTRAINT FK_RecipeIngredient_Recipe FOREIGN KEY (recipeID) REFERENCES RECIPE(recipeID),
+    CONSTRAINT FK_RecipeIngredient_Ingredient FOREIGN KEY (ingredientID) REFERENCES INGREDIENT(ingredientID);
 
-ALTER TABLE Recipe_Ingredient
-ADD CONSTRAINT FK_RecipeIngredient_Recipe FOREIGN KEY (recipeID) REFERENCES Recipe(recipeID),
- CONSTRAINT FK_RecipeIngredient_Ingredient FOREIGN KEY (ingredientID) REFERENCES Ingredient(ingredientID);
+ALTER TABLE STOCK
+ADD CONSTRAINT FK_Stock_Ingredient FOREIGN KEY (ingredientID) REFERENCES INGREDIENT(ingredientID);
 
-ALTER TABLE Stock
-ADD CONSTRAINT FK_Stock_Ingredient FOREIGN KEY (ingredientID) REFERENCES Ingredient(ingredientID);
+ALTER TABLE SALARY
+ADD CONSTRAINT FK_Salary_Employee FOREIGN KEY (employeeID) REFERENCES EMPLOYEES(employeeID),
+    CONSTRAINT FK_Salary_Shift FOREIGN KEY (shiftID) REFERENCES SHIFTS(shiftID);
 
-ALTER TABLE Salary
-ADD CONSTRAINT FK_Salary_Employee FOREIGN KEY (employeeID) REFERENCES Employee(employeeID),
- CONSTRAINT FK_Salary_Shift FOREIGN KEY (shiftID) REFERENCES "Shift" (shiftID);
+ALTER TABLE REPORT
+ADD CONSTRAINT FK_Report_Manager FOREIGN KEY (createdBy) REFERENCES MANAGERS(userID);
 
-ALTER TABLE Report
-ADD CONSTRAINT FK_Report_Manager FOREIGN KEY (createdBy) REFERENCES Manager(userID);
+ALTER TABLE MENUITEM
+ADD CONSTRAINT FK_MenuItem_Drink FOREIGN KEY (itemID) REFERENCES DRINK(drinkID);
 
-ALTER TABLE MenuItem
-ADD CONSTRAINT FK_MenuItem_Drink FOREIGN KEY (itemID) REFERENCES Drink(drinkID) 
+ALTER TABLE REVENUESTATISTICS_REPORT
+ADD CONSTRAINT FK_RevenueReport_Statistic FOREIGN KEY (statisticID) REFERENCES REVENUESTATISTICS(statisticID),
+    CONSTRAINT FK_RevenueReport_Report FOREIGN KEY (reportID) REFERENCES REPORT(reportID);
 
-
-alter table RevenueStatistics_Report
-add constraint fk_revenuereport_statistic foreign key(statisticID) references RevenueStatistics(statisticID),
-    constraint fk_revenuereport_report foreign key (reportID) references Report(reportID)
-
-alter table SystemSettings_Admin
-add constraint fk_systemadmin_settings foreign key (systemID) references SystemSettings(systemID),
-    constraint fk_systemadmin_admin foreign key (userID) references "Admin"(userID)
+ALTER TABLE SYSTEMSETTINGS_ADMIN
+ADD CONSTRAINT FK_SystemAdmin_Settings FOREIGN KEY (systemID) REFERENCES SYSTEMSETTINGS(systemID),
+    CONSTRAINT FK_SystemAdmin_Admin FOREIGN KEY (userID) REFERENCES ADMINS(userID);
