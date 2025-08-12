@@ -22,6 +22,9 @@ pool.connect()
     console.error('Database connection error:', err);
   });
 
+app.use('/api', indexRoutes);
+
+
 app.get('/', (req, res) => {
   pool.query('SELECT NOW()', (err, result) => {
     if (err) {
