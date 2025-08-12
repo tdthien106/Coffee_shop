@@ -1,8 +1,17 @@
 ###
-GET http://localhost:3000
+GET http://localhost:3000/api/users
 
-POST http://localhost:3000
+###
+POST http://localhost:3000/api/users HTTP/1.1
 Content-type: application/json
+
 {
-  "name": "John Doe"
+  "user_id": "U006",
+  "name": "New User",
+  "gender": "Male",
+  "birthday": "1990-01-01",
+  "phone_number": "0123456789",
+  "email": "new@example.com",
+  "username": "newuserr",
+  "password": "securepasswordd"
 }
