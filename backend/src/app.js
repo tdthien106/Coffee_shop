@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 
 import pool from './config/db.js';
+import indexRoutes from './routes/indexRoutes.js';
 
 dotenv.config(); // Load environment variables
 

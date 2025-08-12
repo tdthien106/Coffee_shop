@@ -1,19 +1,9 @@
 import User from '../models/userModel.js';
-import { generateId } from '../utils/helpers.js';
 
 class UserController {
   // Create a new user
   static async createUser(req, res) {
     try {
-      const userData = {
-        userID: generateId(),
-        ...req.body
-      };
-      const newUser = await User.create(userData);
-      res.status(201).json({
-        success: true,
-        data: newUser
-      });
     } catch (error) {
       res.status(500).json({
         success: false,
