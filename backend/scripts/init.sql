@@ -5,7 +5,7 @@ USE Coffee_Shop4;
 GO
 
 -- Step 1: Create all tables (no foreign keys yet)
-CREATE TABLE "User" (
+CREATE TABLE USER (
     userID VARCHAR(50) PRIMARY KEY,
     name VARCHAR(100),
     gender VARCHAR(10),

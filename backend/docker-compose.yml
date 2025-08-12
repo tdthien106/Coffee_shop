@@ -11,6 +11,8 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./scripts/seed1.sql:/docker-entrypoint-initdb.d/seed1.sql
+      - ./scripts/seed2.sql:/docker-entrypoint-initdb.d/seed2.sql
     env_file:
       - ./.env
     healthcheck:
