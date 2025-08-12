@@ -11,6 +11,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api', indexRoutes);
 
 pool.connect()
   .then(() => {
@@ -22,9 +23,6 @@ pool.connect()
   .catch(err => {
     console.error('Database connection error:', err);
   });
-
-app.use('/api', indexRoutes);
-
 
 app.get('/', (req, res) => {
   pool.query('SELECT NOW()', (err, result) => {
