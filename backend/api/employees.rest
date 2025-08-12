@@ -1,0 +1,31 @@
+### Lấy tất cả nhân viên
+GET http://localhost:3000/api/employees
+
+### Lấy 1 nhân viên
+GET http://localhost:3000/api/employees/S001
+
+### Thêm nhân viên mới
+POST http://localhost:3000/api/employees
+Content-Type: application/json
+
+{
+  "employee_id": "E001",
+  "user_id": "U001",
+  "position": "Nhân viên",
+  "salary": 1000
+}
+
+### Sửa nhân viên
+PUT http://localhost:3000/api/employees/E001
+Content-Type: application/json
+
+{
+  "position": "Trưởng phòng",
+  "salary": 2000
+}
+
+### Xóa nhân viên
+DELETE http://localhost:3000/api/employees/E001
+
+### Tìm nhân viên theo user_id
+GET http://localhost:3000/api/employees/user/S001
