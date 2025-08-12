@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 
 import pool from './config/db.js';
+import indexRoutes from './routes/indexRoutes.js';
 
 dotenv.config(); // Load environment variables
 
@@ -10,6 +11,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api', indexRoutes);
 
 pool.connect()
   .then(() => {
