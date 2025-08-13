@@ -89,17 +89,17 @@ class UserModel {
     }
 
     static async findByUsername(username) {
-        try {
-            const { rows } = await pool.query(
-                'SELECT * FROM users WHERE username = $1',
-                [username]
-            );
-            return rows[0] || null;
-        } catch (error) {
-            console.error('UserModel.findByUsername error:', error);
-            throw new Error('Failed to fetch user by username');
-        }
-    }
+    const q = `
+      SELECT u.user_id, u.username, u.password, u.name, u.email,
+             COALESCE(e.position, 'Staff') AS role
+      FROM users u
+      LEFT JOIN employees e ON e.user_id = u.user_id
+      WHERE u.username = $1
+      LIMIT 1
+    `;
+    const { rows } = await pool.query(q, [username]);
+    return rows[0];
+  }
 }
 
 export default UserModel;

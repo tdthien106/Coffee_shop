@@ -5,9 +5,12 @@ import employeeRoutes from "./employeeRoutes.js";
 import orderRoutes from "./orderRoutes.js";
 import drinkRoutes from "./drinkRoutes.js";
 import menuItemRoutes from "./menuItemRoutes.js";
-import paymentRoutes from './paymentRoutes.js'; 
+import paymentRoutes from './paymentRoutes.js';
+import authRoutes from './authRoutes.js';
+
 
 const indexRoutes = express.Router();
+indexRoutes.use('/auth', authRoutes);
 
 indexRoutes.use("/users", userRoutes);
 indexRoutes.use("/employees", employeeRoutes);

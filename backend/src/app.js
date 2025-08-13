@@ -1,16 +1,46 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';   // ✅ import hàm
 
 import pool from './config/db.js';
 import indexRoutes from './routes/indexRoutes.js';
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Khởi tạo lớp Store từ connect-pg-simple
+const PgSession = connectPgSimple(session);        // ✅ gọi hàm với session
+
+app.use(cors({
+  origin: 'http://localhost:5173', // frontend
+  credentials: true,               // ✅ cho phép cookie qua CORS
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session lưu trong Postgres
+app.use(session({
+  store: new PgSession({
+    pool,                        // ✅ dùng pool Postgres đang có
+    createTableIfMissing: true,  // ✅ tự tạo bảng session nếu chưa có
+    // tableName: 'session'      // (tuỳ chọn) tên bảng
+  }),
+  secret: process.env.SESSION_SECRET || 'change_me',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',             // dùng HTTPS + đa domain thì cân nhắc 'none' + secure:true
+    secure: false,               // true nếu chạy HTTPS
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
+  },
+}));
+
 app.use('/api', indexRoutes);
 
 pool.connect()
