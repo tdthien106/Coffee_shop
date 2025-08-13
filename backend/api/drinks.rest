@@ -1,0 +1,37 @@
+### Lấy tất cả đồ uống
+GET  http://localhost:3000/api/drinks
+Content-Type: application/json  
+
+### Lấy 1 đồ uống
+GET  http://localhost:3000/api/drinks/D004
+Content-Type: application/json  
+
+### Thêm đồ uống mới
+POST http://localhost:3000/api/drinks       
+Content-Type: application/json
+
+{
+   "drink_id": "D010",
+      "name": "Ca phe den da khong duong",
+      "unit": "ly",
+      "price": "70000.00",
+      "recipe_id": null
+}
+
+
+### Sửa đồ uống
+PUT http://localhost:3000/api/drinks/D010
+Content-Type: application/json
+
+{
+   
+   "price": "100000.00"
+}
+
+### Xóa đồ uống
+DELETE http://localhost:3000/api/drinks/D004
+
+### Tìm đồ uống theo tên
+GET http://localhost:3000/api/drinks/search?name=Ca%20phe%  
+sua%20da
+Content-Type: application/json

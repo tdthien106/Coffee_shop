@@ -1,0 +1,29 @@
+@base = http://localhost:3000/api
+@order = O1001
+@payment = P1001
+
+### Tạo order
+POST {{base}}/orders
+Content-Type: application/json
+
+{
+  "order_id": "{{order}}",
+  "staff_id": "U002"
+}
+
+### Xác minh order tồn tại NGAY SAU KHI TẠO
+GET {{base}}/orders/{{order}}
+
+### Thanh toán
+POST {{base}}/payments
+Content-Type: application/json
+
+{
+  "payment_id": "{{payment}}",
+  "order_id": "{{order}}",
+  "method": "CASH",
+  "amount": 40000
+}
+
+### Xem payment theo order
+GET {{base}}/payments/{{order}}

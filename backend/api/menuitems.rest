@@ -1,0 +1,27 @@
+### Lấy danh sách món ăn
+GET http://localhost:3000/api/menu/items
+
+### Thêm món ăn mới
+POST http://localhost:3000/api/menu/items       
+Content-Type: application/json
+
+ {
+      "item_id": "D010",
+      "name": "Ca phe den da khong duong",
+      "category": "Coffee",
+      "description": "Ca phe phin ket hop sua dac, da mat lanh.",
+      "base_price": "700000.00",
+      "cost": "8000.00"
+}
+
+### Sửa món ăn
+PUT http://localhost:3000/api/menu/items/D004   
+Content-Type: application/json
+
+{
+   "base_price": "100000.00",
+   "cost": "12000.00"
+}     
+
+### Xóa món ăn
+DELETE http://localhost:3000/api/menu/items/D004            
