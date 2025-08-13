@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:14
@@ -28,7 +26,6 @@ services:
       - ./package.json:/usr/src/app/package.json
       - ./yarn.lock:/usr/src/app/yarn.lock
     depends_on:
-      - db
     env_file:
       - ./.env
     command: sh -c "yarn install && yarn dev"
