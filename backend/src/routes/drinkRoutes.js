@@ -2,10 +2,10 @@
 import express from 'express';
 import DrinkController from '../controllers/drinkController.js';
 
-const router = express.Router();
-router.post('/', DrinkController.create);
-router.get('/', DrinkController.getAll);
-router.get('/:id', DrinkController.getById);
-router.put('/:id', DrinkController.update);
-router.delete('/:id', DrinkController.delete);
-export default router;
+const drinkRoutes = express.Router();
+drinkRoutes.post('/', DrinkController.create);
+drinkRoutes.get('/', DrinkController.getAll);
+drinkRoutes.get('/:id', DrinkController.getById);
+drinkRoutes.put('/:id', DrinkController.update);
+drinkRoutes.delete('/:id', DrinkController.delete);
+export default drinkRoutes;
