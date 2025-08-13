@@ -1,11 +1,11 @@
 import EmployeeModel from "../models/employeeModel.js";
 
 class EmployeeController {
-  // GET all employees (đơn giản hóa)
+  // GET all employees
   async getAllEmployees(req, res) {
     try {
       const employees = await EmployeeModel.findAll();
-      res.json(employees); // Trả thẳng dữ liệu, không cần wrapper
+      res.json(employees);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
