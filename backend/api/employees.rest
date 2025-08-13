@@ -28,4 +28,4 @@ Content-Type: application/json
 DELETE http://localhost:3000/api/employees/E001
 
 ### Tìm nhân viên theo user_id
-GET http://localhost:3000/api/employees/user/S001
+GET http://localhost:3000/api/employees/user/U006

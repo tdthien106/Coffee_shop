@@ -1,0 +1,29 @@
+### Thêm nhân viên trước
+POST http://localhost:3000/api/staffs
+Content-Type: application/json
+
+{
+  "user_id": "STAFF1",
+  "name": "Nhân viên 1"
+}
+
+### Tạo đơn
+POST http://localhost:3000/api/orders
+Content-Type: application/json
+
+{
+  "order_id": "ORDER1",
+  "staff_id": "STAFF1"
+}
+
+### Thêm món
+POST http://localhost:3000/api/orders/ORDER1/items
+Content-Type: application/json
+
+{
+  "drink_id": "DRINK1",
+  "quantity": 1
+}
+
+### Xem đơn
+GET http://localhost:3000/api/orders/ORDER1

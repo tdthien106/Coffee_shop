@@ -4,10 +4,10 @@ import { Router } from "express";
 
 const userRoutes = Router();
 
-userRoutes.get('/users', userController.getAllUsers);
-userRoutes.get('/users/:id', userController.getUserById);
-userRoutes.post('/users', userController.createUser);
-userRoutes.put('/users/:id', userController.updateUser);
-userRoutes.delete('/users/:id', userController.deleteUser);
+userRoutes.get('/', userController.getAllUsers);
+userRoutes.get('/:id', userController.getUserById);
+userRoutes.post('/', userController.createUser);
+userRoutes.put('/:id', userController.updateUser);
+userRoutes.delete('/:id', userController.deleteUser);
 
 export default userRoutes;
