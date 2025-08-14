@@ -1,15 +1,17 @@
+// routes/authRoutes.js
 import { Router } from 'express';
 import AuthController from '../controllers/authController.js';
 import { requireLogin, requireRole } from '../middleware/authMiddleware.js';
 
-const authRoutes = Router();
-authRoutes.post('/login', AuthController.login);
-// authRoutes.get('/me', requireLogin, AuthController.me);
-// authRoutes.post('/logout', requireLogin, AuthController.logout);
+const router = Router();
 
-//ví dụ: chỉ Manager mới được gọi
-// authRoutes.get('/manager-only', requireRole('manager'), (req,res)=>{
-//   res.json({ success:true, secret:'Only managers see this' });
-// });
+router.post('/login', AuthController.login);
+router.get('/me', requireLogin, AuthController.me);
+router.post('/logout', requireLogin, AuthController.logout);
 
-export default authRoutes;
+// ví dụ route chỉ manager truy cập
+router.get('/manager-only', requireRole('manager'), (req, res) => {
+  res.json({ success:true, secret:'Only managers see this', who: req.user });
+});
+
+export default router;

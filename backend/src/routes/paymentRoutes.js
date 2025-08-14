@@ -3,9 +3,9 @@ import express from "express";
 import PaymentController from "../controllers/paymentController.js";
 import { validateProcessPayment } from "../middleware/paymentMiddleware.js";
 
-const paymentRoutes = express.Router();
+const router = express.Router();
 
-paymentRoutes.post("/", validateProcessPayment, PaymentController.process);
-paymentRoutes.get("/:orderId", PaymentController.getByOrderId);
+router.post("/", validateProcessPayment, PaymentController.process);
+router.get("/:orderId", PaymentController.getByOrderId);
 
-export default paymentRoutes;
+export default router;

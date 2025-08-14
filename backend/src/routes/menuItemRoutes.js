@@ -6,11 +6,11 @@ import {
   validateUpdateMenuItem,
 } from "../middleware/menuItemMiddleware.js";
 
-const menuRoutes = express.Router();
-menuRoutes.post("/", validateCreateMenuItem, MenuItemController.create);
-menuRoutes.get("/", MenuItemController.getAll); // ?withDrink=1 để join Drink
-menuRoutes.get("/:id", MenuItemController.getById);
-menuRoutes.put("/:id", validateUpdateMenuItem, MenuItemController.update);
-menuRoutes.delete("/:id", MenuItemController.delete);
+const router = express.Router();
+router.post("/", validateCreateMenuItem, MenuItemController.create);
+router.get("/", MenuItemController.getAll); // ?withDrink=1 để join Drink
+router.get("/:id", MenuItemController.getById);
+router.put("/:id", validateUpdateMenuItem, MenuItemController.update);
+router.delete("/:id", MenuItemController.delete);
 
-export default menuRoutes;
+export default router;

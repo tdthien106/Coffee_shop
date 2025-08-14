@@ -22,7 +22,6 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api', indexRoutes);
 
 // Session lưu trong Postgres
 app.use(session({
@@ -42,6 +41,8 @@ app.use(session({
   },
 }));
 
+app.use('/api', indexRoutes);
+
 pool.connect()
   .then(() => {
     console.log('✅✅✅Connected to the database successfully');
@@ -52,3 +53,19 @@ pool.connect()
   .catch(err => {
     console.error('Database connection error:', err);
   });
+
+app.get('/', (req, res) => {
+  pool.query('SELECT NOW()', (err, result) => {
+    if (err) {
+      console.error('Error executing query', err);
+      res.status(500).send('Database query error');
+    } else {
+      res.send(`Current time: ${result.rows[0].now}`);
+    }
+  } );  
+});
+
+app.post('/', (req, res) => {
+  const { name } = req.body;
+  res.send(`Hello ${name}!`);
+});
