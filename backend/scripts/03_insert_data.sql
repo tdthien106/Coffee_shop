@@ -42,3 +42,8 @@ INSERT INTO menu_item (item_id, name, category, description, base_price, cost) V
   ('D005','Ca phe sua da','Coffee','Ca phe phin ket hop sua dac, da mat lanh.',25000,8000),
   ('D006','Bac siu','Coffee','Ca phe it, nhieu sua, vi ngot beo dac trung.',30000,10000),
   ('D007','Americano','Coffee','Espresso pha loang voi nuoc nong, vi nhe.',35000,12000);
+
+INSERT INTO drink_image (image_id, drink_id, image_url) VALUES
+  ('IMG004','D004','/static/images/drinks/ca_phe_den_da.jpg'),
+  ('IMG005','D005','/static/images/drinks/ca_phe_sua_da.jpg'),
+  ('IMG006','D006','/static/images/drinks/bac_siu.jpg')

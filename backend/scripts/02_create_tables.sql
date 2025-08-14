@@ -205,3 +205,16 @@ CREATE INDEX idx_payment_order_id          ON payment(order_id);
 CREATE INDEX idx_order_detail_order_id     ON order_detail(order_id);
 CREATE INDEX idx_menu_item_category        ON menu_item(category);
 CREATE INDEX idx_drink_name                ON drink(name);
+
+ALTER TABLE drink ADD COLUMN image_url varchar(255);
+
+CREATE TABLE drink_image (
+  image_id       varchar(50) PRIMARY KEY,
+  drink_id       varchar(50) REFERENCES drink(drink_id) ON DELETE CASCADE,
+  image_url      varchar(255) NOT NULL
+);
+\echo "Drink image table created."
+
+UPDATE drink SET image_url = '/static/images/drinks/ca_phe_de_da.jpg' WHERE drink_id = 'D004';
+UPDATE drink SET image_url = '/static/images/drinks/ca_phe_sua_da.jpg' WHERE drink_id = 'D005';
+UPDATE drink SET image_url = '/static/images/drinks/bac_siu.jpg' WHERE drink_id = 'D006';
