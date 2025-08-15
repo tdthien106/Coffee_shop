@@ -61,14 +61,25 @@ class MenuItem {
   }
 
   // tiện: lấy menu kèm info Drink
-  static async findAllWithDrink() {
-    const q = `
-      SELECT mi.*, d.unit, d.price, d.recipe_id
-      FROM menu_item mi
-      LEFT JOIN drink d ON d.drink_id = mi.item_id
-      ORDER BY mi.item_id
-    `;
-    const { rows } = await pool.query(q);
+   static async findAllWithDrink() {
+      const q = `
+        SELECT
+          mi.item_id,
+          mi.name,
+          mi.category,
+          mi.description,
+          mi.base_price,
+          mi.cost,
+          d.unit,
+          d.price,            -- giá trong drink (nếu bạn cần)
+          d.recipe_id,
+          d.image_url         -- ẢNH từ drink
+        FROM menu_item mi
+        LEFT JOIN drink d
+          ON d.drink_id = mi.item_id
+        ORDER BY mi.item_id
+      `;
+      const { rows } = await pool.query(q);
     return rows;
   }
 }

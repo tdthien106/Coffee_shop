@@ -1,10 +1,10 @@
 \echo "Inserting initial data into the database..."
 -- USERS
 INSERT INTO users (user_id, name, gender, birthday, phone_number, email, username, password) VALUES
-  ('U001','Pham Ngoc Gia Bao','Male','2005-09-07','0901234567','bao@gmail.com','baobao05','123456'),
+  ('U001','Pham Ngoc Gia Bao','Male','2005-09-07','0901234567','bao@gmail.com','baobao','123'),
   ('U002','Vo Quoc Trieu','Male','2005-03-06','0912345678','trieu@gmail.com','trieu007','abcdef'),
   ('U003','Vo Le Huu Thang','Male','2005-11-11','0923456789','thang@gmail.com','thangne05','hihi123'),
-  ('U004','Trinh Duc Thien','Male','2005-04-06','0923456783','thien@gmail.com','thien12','hehe2203');
+  ('U004','Trinh Duc Thien','Male','2005-04-06','0923456783','thien@gmail.com','thienthien','123');
 
 -- EMPLOYEES
 INSERT INTO employees (employee_id, user_id, start_date, end_date, position, salary) VALUES
@@ -42,3 +42,23 @@ INSERT INTO menu_item (item_id, name, category, description, base_price, cost) V
   ('D005','Ca phe sua da','Coffee','Ca phe phin ket hop sua dac, da mat lanh.',25000,8000),
   ('D006','Bac siu','Coffee','Ca phe it, nhieu sua, vi ngot beo dac trung.',30000,10000),
   ('D007','Americano','Coffee','Espresso pha loang voi nuoc nong, vi nhe.',35000,12000);
+
+
+
+  UPDATE drink
+  SET image_url = 'http://localhost:3000/static/images/D004.jpg'
+  WHERE drink_id = 'D004';
+
+UPDATE drink
+  SET image_url = 'http://localhost:3000/static/images/D005.jpg'
+  WHERE drink_id = 'D005';
+
+
+  UPDATE drink
+  SET image_url = 'http://localhost:3000/static/images/D004.jpg'
+  WHERE drink_id = 'D006';
+
+
+  UPDATE drink
+  SET image_url = 'http://localhost:3000/static/images/D004.jpg'
+  WHERE drink_id = 'D007';

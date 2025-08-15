@@ -8,6 +8,10 @@ import Staffs  from "./pages/Staffs.jsx";
 import Revenue from "./pages/Revenue.jsx";
 import Login   from "./pages/Login.jsx";
 
+import CheckoutSummary   from "./pages/CheckoutSummary.jsx";
+import CheckoutTransfer  from "./pages/CheckoutTransfer.jsx";
+import CheckoutSuccess   from "./pages/CheckoutSuccess.jsx";
+
 import RequireAuth from "././guard/RequireAuth.jsx";
 
 export default function App() {
@@ -18,7 +22,6 @@ export default function App() {
     return (
       <Routes>
         <Route path="/login" element={<Login />} />
-        {/* Bất kỳ đường dẫn nào khác khi đang ở /login -> về /login */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
@@ -33,16 +36,14 @@ export default function App() {
         <main className="content">
           <Routes>
             {/* Gốc: điều hướng theo role hiện tại */}
-            
             <Route
               path="/"
               element={
                 (() => {
-                  const token = sessionStorage.getItem("token");        // ✅ LẤY TOKEN
+                  const token = sessionStorage.getItem("token");
                   const u = sessionStorage.getItem("user");
                   const me = u ? JSON.parse(u) : null;
 
-                  // Nếu thiếu token hoặc user -> về login
                   if (!token || !me) return <Navigate to="/login" replace />;
 
                   const role = (me?.role || "").toLowerCase();
@@ -79,7 +80,7 @@ export default function App() {
               }
             />
 
-            {/* Staff ONLY (nếu muốn manager cũng vào orders, đổi roles thành ["staff","manager"]) */}
+            {/* Staff ONLY (giữ nguyên ý định ban đầu) */}
             <Route
               path="/orders"
               element={
@@ -88,6 +89,33 @@ export default function App() {
                 </RequireAuth>
               }
             />
+
+            {/* ====== CHECKOUT FLOW (staff + manager) ====== */}
+            <Route
+              path="/checkout"
+              element={
+                <RequireAuth roles={["staff", "manager"]}>
+                  <CheckoutSummary />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/checkout/transfer"
+              element={
+                <RequireAuth roles={["staff", "manager"]}>
+                  <CheckoutTransfer />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/checkout/success"
+              element={
+                <RequireAuth roles={["staff", "manager"]}>
+                  <CheckoutSuccess />
+                </RequireAuth>
+              }
+            />
+            {/* ============================================ */}
 
             <Route path="*" element={<div className="p">404</div>} />
           </Routes>

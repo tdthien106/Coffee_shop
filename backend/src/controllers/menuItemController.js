@@ -13,10 +13,9 @@ class MenuItemController {
 
   static async getAll(req, res) {
     try {
-      const items =
-        req.query.withDrink === "1"
-          ? await MenuItem.findAllWithDrink()
-          : await MenuItem.findAll();
+      const items = (req.query.withDrink === '1')
+        ? await MenuItem.findAllWithDrink()
+        : await MenuItem.findAll();
       res.status(200).json({ success: true, data: items });
     } catch (e) {
       res.status(500).json({ success: false, message: e.message });

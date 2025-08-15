@@ -8,6 +8,7 @@ import menuItemRoutes from "./menuItemRoutes.js";
 import paymentRoutes from './paymentRoutes.js';
 import authRoutes from './authRoutes.js';
 
+import checkoutRoutes from "./checkoutRoutes.js";
 
 const indexRoutes = express.Router();
 indexRoutes.use('/auth', authRoutes);
@@ -18,5 +19,6 @@ indexRoutes.use("/orders", orderRoutes);
 indexRoutes.use("/drinks", drinkRoutes);
 indexRoutes.use("/menu/items", menuItemRoutes);
 indexRoutes.use("/payments", paymentRoutes);
+indexRoutes.use("/checkout", checkoutRoutes);
 
 export default indexRoutes;
