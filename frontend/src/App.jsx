@@ -1,30 +1,14 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Sidebar from "./components/Sidebar.jsx";
 import Topbar from "./components/Topbar.jsx";
-import Staffs from "./pages/Staffs.jsx";
-import Home from "./pages/Home.jsx";
-import Orders from "./pages/Orders.jsx";
+
+import Home    from "./pages/Home.jsx";
+import Orders  from "./pages/Orders.jsx";
+import Staffs  from "./pages/Staffs.jsx";
 import Revenue from "./pages/Revenue.jsx";
-import Login from "./pages/Login.jsx";
+import Login   from "./pages/Login.jsx";
 
-/* ==== Guard nhỏ ngay trong file: kiểm tra đăng nhập + role ==== */
-function RequireAuth({ children, roles }) {
-  const u = localStorage.getItem("user");
-  const me = u ? JSON.parse(u) : null;
-
-  // Chưa đăng nhập => về /login
-  if (!me) return <Navigate to="/login" replace />;
-
-  // Có cấu hình roles => kiểm tra quyền
-  if (roles && roles.length) {
-    const allow = roles.map((r) => r.toLowerCase());
-    const myRole = (me.role || "").toLowerCase();
-    if (!allow.includes(myRole)) {
-      return <div className="p">403 – Bạn không có quyền truy cập trang này</div>;
-    }
-  }
-  return children;
-}
+import RequireAuth from "././guard/RequireAuth.jsx";
 
 export default function App() {
   const { pathname } = useLocation();
@@ -33,11 +17,9 @@ export default function App() {
   if (pathname.startsWith("/login")) {
     return (
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
-        <Route path="*" element={<Navigate to="/login" />} />
-        <Route path="/home"    element={<RequireAuth roles={['manager']}><Home /></RequireAuth>} />
-        <Route path="/staffs"  element={<RequireAuth roles={['staff','manager']}><Staffs/></RequireAuth>} />
+        {/* Bất kỳ đường dẫn nào khác khi đang ở /login -> về /login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
   }
@@ -50,41 +32,59 @@ export default function App() {
         <Sidebar />
         <main className="content">
           <Routes>
-            {/* Mặc định về login */}
-            <Route path="/" element={<Navigate to="/login" />} />
+            {/* Gốc: điều hướng theo role hiện tại */}
+            
+            <Route
+              path="/"
+              element={
+                (() => {
+                  const token = sessionStorage.getItem("token");        // ✅ LẤY TOKEN
+                  const u = sessionStorage.getItem("user");
+                  const me = u ? JSON.parse(u) : null;
 
-            {/* Manager-only */}
+                  // Nếu thiếu token hoặc user -> về login
+                  if (!token || !me) return <Navigate to="/login" replace />;
+
+                  const role = (me?.role || "").toLowerCase();
+                  return role === "staff"
+                    ? <Navigate to="/orders" replace />
+                    : <Navigate to="/home" replace />;
+                })()
+              }
+            />
+
+            {/* Manager/Admin ONLY */}
             <Route
               path="/home"
               element={
-                <RequireAuth roles={["manager"]}>
+                <RequireAuth roles={["manager", "admin"]}>
                   <Home />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/revenue"
-              element={
-                <RequireAuth roles={["manager"]}>
-                  <Revenue />
-                </RequireAuth>
-              }
-            />
-
-            {/* Staff + Manager đều vào được */}
-            <Route
-              path="/orders"
-              element={
-                <RequireAuth roles={["staff", "manager"]}>
-                  <Orders />
                 </RequireAuth>
               }
             />
             <Route
               path="/staffs"
               element={
-                <RequireAuth roles={["staff", "manager"]}>
+                <RequireAuth roles={["manager", "admin"]}>
                   <Staffs />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/revenue"
+              element={
+                <RequireAuth roles={["manager", "admin"]}>
+                  <Revenue />
+                </RequireAuth>
+              }
+            />
+
+            {/* Staff ONLY (nếu muốn manager cũng vào orders, đổi roles thành ["staff","manager"]) */}
+            <Route
+              path="/orders"
+              element={
+                <RequireAuth roles={["staff"]}>
+                  <Orders />
                 </RequireAuth>
               }
             />

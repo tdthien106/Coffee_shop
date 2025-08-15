@@ -42,3 +42,13 @@ INSERT INTO menu_item (item_id, name, category, description, base_price, cost) V
   ('D005','Ca phe sua da','Coffee','Ca phe phin ket hop sua dac, da mat lanh.',25000,8000),
   ('D006','Bac siu','Coffee','Ca phe it, nhieu sua, vi ngot beo dac trung.',30000,10000),
   ('D007','Americano','Coffee','Espresso pha loang voi nuoc nong, vi nhe.',35000,12000);
+
+
+
+  UPDATE drink
+  SET image_url = 'http://localhost:3000/static/images/D004.jpg'
+  WHERE drink_id = 'D004';
+
+UPDATE drink
+  SET image_url = 'http://localhost:3000/static/images/D005.jpg'
+  WHERE drink_id = 'D005';

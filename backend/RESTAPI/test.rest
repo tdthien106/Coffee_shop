@@ -1,0 +1,28 @@
+@base = http://localhost:3000/api
+@order = O20250812170000
+
+### Tạo order + items
+POST {{base}}/orders
+Content-Type: application/json
+
+{
+  "order_id": "{{order}}",
+  "staff_id": "U002",
+  "items": [
+    { "drink_id": "D004", "quantity": 2, "unit_price": 20000, "discount": 0 },
+    { "drink_id": "D005", "quantity": 1, "discount": 10 }
+  ]
+}
+
+### Thêm item vào order
+POST {{base}}/orders/{{order}}/items
+Content-Type: application/json
+
+{
+  "drink_id": "D007",
+  "quantity": 3,
+  "discount": 0
+}
+
+### Xem order + items
+GET {{base}}/orders/{{order}}

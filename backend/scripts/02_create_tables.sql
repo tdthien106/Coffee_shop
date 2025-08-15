@@ -205,3 +205,6 @@ CREATE INDEX idx_payment_order_id          ON payment(order_id);
 CREATE INDEX idx_order_detail_order_id     ON order_detail(order_id);
 CREATE INDEX idx_menu_item_category        ON menu_item(category);
 CREATE INDEX idx_drink_name                ON drink(name);
+
+
+ALTER TABLE drink ADD COLUMN image_url text; 
