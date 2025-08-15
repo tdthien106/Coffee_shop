@@ -208,3 +208,6 @@ CREATE INDEX idx_drink_name                ON drink(name);
 
 
 ALTER TABLE drink ADD COLUMN image_url text; 
+
+
+ALTER TABLE order_detail ADD COLUMN IF NOT EXISTS note text;

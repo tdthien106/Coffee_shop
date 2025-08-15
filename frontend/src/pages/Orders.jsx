@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { saveCheckoutDraft } from "../utils/checkoutStore";
 
 /* ====== Config API ====== */
 const API = "http://localhost:3000/api";
@@ -183,6 +185,29 @@ export default function Orders() {
     }
   };
 
+const nav = useNavigate();
+
+const goPayment = () => {
+  if (!cart.length) return alert("Chưa có món!");
+  const me = JSON.parse(sessionStorage.getItem("user") || localStorage.getItem("user") || "{}");
+
+  saveCheckoutDraft({
+    staff_id: me?.user_id || me?.id,
+    table,
+    guests,
+    items: cart.map(it => ({
+      drink_id: it.item_id,
+      name: it.name,
+      quantity: it.quantity,
+      price: it.price,
+      note: `${(it.notes?.tags||[]).join("; ")}${it.notes?.text ? " | " + it.notes.text : ""}`
+    }))
+  });
+
+  nav("/checkout");
+};
+
+
   /* ====== Render ====== */
   return (
     <>
@@ -314,7 +339,7 @@ export default function Orders() {
 
           <div className="actions">
             <button className="cancel" onClick={cancelOrder}>CANCEL ORDER</button>
-            <button className="pay" onClick={handlePayment}>PAYMENT</button>
+            <button className="pay" onClick={goPayment}>PAYMENT</button>
           </div>
         </aside>
       </div>

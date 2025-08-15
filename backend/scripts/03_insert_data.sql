@@ -52,3 +52,13 @@ INSERT INTO menu_item (item_id, name, category, description, base_price, cost) V
 UPDATE drink
   SET image_url = 'http://localhost:3000/static/images/D005.jpg'
   WHERE drink_id = 'D005';
+
+
+  UPDATE drink
+  SET image_url = 'http://localhost:3000/static/images/D004.jpg'
+  WHERE drink_id = 'D006';
+
+
+  UPDATE drink
+  SET image_url = 'http://localhost:3000/static/images/D004.jpg'
+  WHERE drink_id = 'D007';
