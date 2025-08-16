@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+
 import Sidebar from "./components/Sidebar.jsx";
 import Topbar from "./components/Topbar.jsx";
 
@@ -13,6 +14,14 @@ import CheckoutTransfer  from "./pages/CheckoutTransfer.jsx";
 import CheckoutSuccess   from "./pages/CheckoutSuccess.jsx";
 
 import RequireAuth from "././guard/RequireAuth.jsx";
+
+function Test() {
+  return (
+    <div className="bg-blue-500 text-white p-4">
+      Tailwind đã hoạt động!
+    </div>
+  )
+}
 
 export default function App() {
   const { pathname } = useLocation();

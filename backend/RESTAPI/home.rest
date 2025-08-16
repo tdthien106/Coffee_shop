@@ -1,0 +1,2 @@
+GET http://localhost:3000/api/home/dashboard
+Authorization: Bearer 5up3r_S3cur3*K3y
