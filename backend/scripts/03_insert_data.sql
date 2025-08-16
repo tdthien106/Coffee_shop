@@ -18,7 +18,7 @@ INSERT INTO managers (user_id) VALUES ('U004');
 
 -- STAFFS
 INSERT INTO staffs (user_id, total_shifts, current_shift) VALUES
-  ('U001', 10, NULL)
+  ('U001', 10, NULL),
   ('U002',13,NULL),
   ('U003',15,NULL),
   ('U004',10,NULL);
