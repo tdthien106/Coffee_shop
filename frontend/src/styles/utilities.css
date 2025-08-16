@@ -1,0 +1,39 @@
+.dim {
+  opacity: 0.65;
+}
+.err {
+  color: #c00;
+}
+.p {
+  padding: 8px;
+} /* bản nhẹ cho một số khu */
+.actions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.actions-row .rm,
+.actions-row .note-ico {
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.q-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.q-ctrl button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+.q-ctrl span {
+  min-width: 20px;
+  text-align: center;
+}

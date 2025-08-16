@@ -1,0 +1,27 @@
+.sidebar {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  align-self: stretch;
+}
+.side-title {
+  font-size: 12px;
+  color: #5585ff;
+  font-weight: 700;
+  margin: 6px 8px 10px;
+}
+.side-item {
+  display: block;
+  width: 100%;
+  margin: 6px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #333;
+  background: #fff;
+}
+.side-item.active {
+  background: #eef3ff;
+  border-color: #cfe0ff;
+}
