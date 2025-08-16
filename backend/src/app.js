@@ -6,7 +6,7 @@ import connectPgSimple from "connect-pg-simple"; // ✅ import hàm
 import path from "path";
 
 import pool from "./config/db.js";
-import indexRoutes from "./routes/indexRoutes.js";
+import indexRoutes from "./routes/_indexRoutes.js";
 
 dotenv.config();
 
