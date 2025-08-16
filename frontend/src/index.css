@@ -21,27 +21,20 @@ a {
   padding: 24px;
 }
 
-/* ===== Topbar ===== */
-.layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
+/* Topbar */
 .topbar {
   height: 56px;
   background: var(--blue);
   color: #fff;
   display: flex;
   align-items: center;
+  justify-content: center;
   position: sticky;
   top: 0;
   z-index: 5;
   box-shadow: var(--shadow);
   padding: 0 12px;
 }
-
-/* Nút back trái */
 .topbar .back {
   position: absolute;
   left: 12px;
@@ -49,71 +42,115 @@ a {
   border: none;
   color: #fff;
   font-size: 18px;
-  line-height: 1;
   cursor: pointer;
 }
-
-/* Brand luôn giữa tuyệt đối */
 .topbar .brand {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   font-weight: 800;
   letter-spacing: 0.5px;
-  white-space: nowrap;
-  pointer-events: none; /* tránh bị click block các phần tử khác */
 }
 
-/* Cụm bên phải: avatar + tên + logout */
+/* Khu vực phải */
 .topbar-right {
   position: absolute;
   right: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
-
-
-
-.topbar-right .user {
-  max-width: 160px;
-  font-size: 13px;
-  opacity: 0.95;
+.avatar-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  display: inline-block;
+}
+.topbar-name {
+  font-weight: 600;
+  max-width: 28ch; /* tên dài thì cắt */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-.topbar-right .logout {
-  margin-left: 4px;
-  border: 1px solid rgba(255,255,255,0.6);
+.sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+}
+.logout-btn {
   background: transparent;
+  border: none;
   color: #fff;
-  font-size: 12px;
-  border-radius: 999px;
-  padding: 4px 10px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.logout-btn:hover,
+.logout-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .topbar-name {
+    max-width: 18ch;
+  }
+}
+
+/* Modal (tái dùng) */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+}
+.modal-card {
+  width: min(420px, 96vw);
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+}
+.modal-head {
+  background: #2f6bd9;
+  color: #fff;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-body {
+  padding: 16px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+.btn {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
 }
-.topbar-right .logout:hover {
-  background: rgba(255,255,255,0.15);
-}
-.topbar-name{
-  font-weight: 600;
+.btn.danger {
+  background: #e53935;
   color: #fff;
-  font-size: 18px;
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 200px; /* giới hạn độ rộng */
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-  pointer-events: none; 
+  border-color: #e53935;
 }
-/* Màn hình hẹp: ẩn tên để tránh chật chội */
-@media (max-width: 520px) {
-  .topbar-right .user {
-    display: none;
-  }
+.close {
+  background: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
 }
 
 /* Lưới chính: sidebar + content */

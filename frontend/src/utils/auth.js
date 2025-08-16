@@ -14,7 +14,7 @@ export function isLoggedIn(){
     return !!getToken() && !!getUser();
 }
 
-export function logout(){
+export function logoutClientSide(){
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('user');
 }
