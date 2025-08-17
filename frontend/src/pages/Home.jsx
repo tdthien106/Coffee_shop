@@ -218,8 +218,8 @@ const Home = () => {
                 </thead>
                 <tbody>
                   {dashboardData.recentOrders.map((order) => (
-                    <tr key={order.orderId}>
-                      <td>{order.orderId}</td>
+                    <tr key={order.order_id}>
+                      <td>{order.order_id}</td>
                       <td>{order.location}</td>
                       <td>{order.value.toLocaleString()} VND</td>
                       <td>{new Date(order.timestamp).toLocaleTimeString()}</td>

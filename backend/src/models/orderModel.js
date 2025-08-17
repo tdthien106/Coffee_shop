@@ -3,7 +3,10 @@ import pool from "../config/db.js";
 // Lấy giá từ bảng drink
 async function getDrinkPrice(drinkId, client = pool) {
   const { rows } = await client.query(
-    `SELECT price FROM drink WHERE drink_id = $1`,
+    `SELECT COALESCE(d.price, mi.base_price) AS price
+      FROM drink d
+      LEFT JOIN menu_item mi ON mi.item_id = d.drink_id
+     WHERE d.drink_id = $1`,
     [drinkId]
   );
   if (!rows[0]) throw new Error(`Drink not found: ${drinkId}`);
@@ -12,11 +15,12 @@ async function getDrinkPrice(drinkId, client = pool) {
 
 // Tính total cho 1 dòng
 function calcTotal(unitPrice, quantity, discount = 0) {
-  const up = Number(unitPrice || 0);
-  const q = Number(quantity || 1);
+  const up = Number(unitPrice);
+  const q = Number(quantity);
   const d = Math.max(0, Number(discount || 0)); // %
-  const gross = up * q;
-  return Math.max(0, Math.round(gross * (1 - d / 100)));
+  const gross = (Number.isFinite(up) ? up : 0) * (Number.isFinite(q) ? q : 1);
+  const total = Math.round(gross * (1 - d / 100));
+  return Math.max(0, Number.isFinite(total) ? total : 0);
 }
 
 class OrderModel {
@@ -99,12 +103,14 @@ class OrderModel {
       const order = r1.rows[0];
 
       for (const it of items) {
-        const drinkId  = it.drink_id;
+        const drinkId = it.drink_id;
         const quantity = Number(it.quantity || 1);
         const discount = Number(it.discount || 0);
-        const price    = it.unit_price ?? (await getDrinkPrice(drinkId, client));
-        const total    = calcTotal(price, quantity, discount);
-        const odId     = `${orderId}-${drinkId}-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+        const price = it.unit_price ?? (await getDrinkPrice(drinkId, client));
+        const total = calcTotal(price, quantity, discount);
+        const odId = `${orderId}-${drinkId}-${Date.now()}-${Math.floor(
+          Math.random() * 1000
+        )}`;
 
         await client.query(
           `INSERT INTO order_detail
