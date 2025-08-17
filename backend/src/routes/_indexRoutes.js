@@ -21,6 +21,6 @@ indexRoutes.use("/drinks", drinkRoutes);
 indexRoutes.use("/menu/items", menuItemRoutes);
 indexRoutes.use("/payments", paymentRoutes);
 indexRoutes.use("/checkout", checkoutRoutes);
-indexRoutes.use('/home', homeRoutes)
+indexRoutes.use("/home", homeRoutes)
 
 export default indexRoutes;
