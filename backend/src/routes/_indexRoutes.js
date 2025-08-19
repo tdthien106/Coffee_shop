@@ -8,6 +8,7 @@ import menuItemRoutes from "./menuItemRoutes.js";
 import paymentRoutes from './paymentRoutes.js';
 import authRoutes from './authRoutes.js';
 import homeRoutes from "./homeRoutes.js";
+import exportRoutes from "./exportRoutes.js";
 
 import checkoutRoutes from "./checkoutRoutes.js";
 
@@ -20,7 +21,8 @@ indexRoutes.use("/orders", orderRoutes);
 indexRoutes.use("/drinks", drinkRoutes);
 indexRoutes.use("/menu/items", menuItemRoutes);
 indexRoutes.use("/payments", paymentRoutes);
+indexRoutes.use("/exports", exportRoutes);
 indexRoutes.use("/checkout", checkoutRoutes);
-indexRoutes.use('/home', homeRoutes)
+indexRoutes.use('/home', homeRoutes);
 
 export default indexRoutes;

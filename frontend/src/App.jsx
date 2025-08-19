@@ -8,6 +8,7 @@ import Orders  from "./pages/Orders.jsx";
 import Staffs  from "./pages/Staffs.jsx";
 import Revenue from "./pages/Revenue.jsx";
 import Login   from "./pages/Login.jsx";
+import ExportPage from "./pages/Export.jsx";
 
 import CheckoutSummary   from "./pages/CheckoutSummary.jsx";
 import CheckoutTransfer  from "./pages/CheckoutTransfer.jsx";
@@ -89,6 +90,14 @@ export default function App() {
               }
             />
 
+            <Route
+              path="/export"
+              element={
+                <RequireAuth roles={["manager", "admin"]}>
+                  <ExportPage/>
+                </RequireAuth>
+              }
+            />
             {/* Staff ONLY (giữ nguyên ý định ban đầu) */}
             <Route
               path="/orders"
