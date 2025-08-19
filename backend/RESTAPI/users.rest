@@ -2,7 +2,7 @@
 GET http://localhost:3000/api/users
 
 ### Lấy user bằng ID
-GET http://localhost:3000/api/users/U006
+GET http://localhost:3000/api/users/U001
 
 ### Tạo mới user
 POST http://localhost:3000/api/users HTTP/1.1
