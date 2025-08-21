@@ -1,0 +1,9 @@
+POST http://localhost:3000/api/exports
+Content-Type: application/json
+
+{
+  "category": "order",
+  "from": "2025-08-01",
+  "to": "2025-08-19",
+  "store": "1"
+}
