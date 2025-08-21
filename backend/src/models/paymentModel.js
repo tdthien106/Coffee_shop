@@ -6,6 +6,9 @@ class Payment {
     const payment_id  = data.payment_id ?? data.paymentID ?? ("P" + Date.now());
     const order_id    = data.order_id   ?? data.orderID;
     const method      = data.method || "cash";
+    if(data.amount === undefined || data.amount === null) {
+      throw new Error("amount is required");
+    }
     const amount      = Number(data.amount || 0);
     const paymentDate = data.payment_date ?? null;
 
@@ -16,6 +19,7 @@ class Payment {
       [payment_id, order_id, method, amount, paymentDate]
     );
     return rows[0];
+  
   }
 
   /** Tạo payment **và** gắn vào orders (transaction an toàn) */

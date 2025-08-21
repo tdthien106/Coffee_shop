@@ -28,7 +28,7 @@ class AuthController {
 
     try {
       const { rows } = await pool.query(
-        `SELECT user_id, username, password FROM users WHERE username = $1`,
+        `SELECT user_id, username, password, name FROM users WHERE username = $1`,
         [username]
       );
       if (!rows[0]) {
@@ -53,7 +53,7 @@ class AuthController {
       return res.json({
         success: true,
         token,
-        user: { user_id: user.user_id, username: user.username, role }
+        user: { user_id: user.user_id, username: user.username,name: user.name, role }
       });
     } catch (e) {
       console.error('Login error:', e);

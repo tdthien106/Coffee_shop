@@ -1,0 +1,9 @@
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family:system-ui, Segoe UI, Arial, sans-serif;
+  background:var(--bg);
+  color:#111;
+}
+a{ color:inherit; text-decoration:none; }
+.p{ padding:24px; }

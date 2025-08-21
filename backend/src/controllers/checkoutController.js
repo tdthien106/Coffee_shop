@@ -23,6 +23,8 @@ export default class CheckoutController {
           order_id,
           it.drink_id,
           it.quantity ?? 1,
+          null,
+          0,
           it.note ?? null
         );
       }

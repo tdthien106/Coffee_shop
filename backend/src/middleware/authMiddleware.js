@@ -33,6 +33,10 @@ function extractToken(req) {
  */
 export const authenticate = (req, res, next) => {
   const token = extractToken(req);
+  if (process.env.NODE_ENV === 'development') {
+    req.user = { userId: 'U004', role: 'manager' }; // Mock user
+    return next();
+  }
   
   if (!token) {
     return res.status(401).json({ 
@@ -74,6 +78,8 @@ export const authorize = (...roles) => {
   const allowedRoles = new Set(roles.map(r => String(r).toLowerCase()));
   
   return (req, res, next) => {
+    console.log('User Role:', req.user.role); // Debug
+    console.log('Required Roles:', roles); 
     if (!req.user) {
       return res.status(401).json({ 
         success: false, 

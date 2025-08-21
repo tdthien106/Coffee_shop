@@ -116,3 +116,96 @@ UPDATE drink
   UPDATE drink
   SET image_url = 'http://localhost:3000/static/images/D004.jpg'
   WHERE drink_id = 'D007';
+
+
+UPDATE orders SET create_time = '2025-08-16 08:30:00' WHERE order_id = 'ORD001';
+UPDATE orders SET create_time = '2025-08-16 09:15:00' WHERE order_id = 'ORD002';
+UPDATE orders SET create_time = '2025-08-17 16:45:00' WHERE order_id = 'ORD003';
+
+-- Update existing orders to recent dates
+UPDATE orders SET create_time = '2025-08-16 08:30:00' WHERE order_id = 'ORD001';
+UPDATE orders SET create_time = '2025-08-16 09:15:00' WHERE order_id = 'ORD002';
+UPDATE orders SET create_time = '2025-08-17 16:45:00' WHERE order_id = 'ORD003';
+
+-- Update payment dates to match
+UPDATE payment SET payment_date = '2025-08-16 08:30:00' WHERE payment_id = 'PAY001';
+UPDATE payment SET payment_date = '2025-08-16 09:15:00' WHERE payment_id = 'PAY002';
+UPDATE payment SET payment_date = '2025-08-17 16:45:00' WHERE payment_id = 'PAY003';
+
+-- Add more recent orders with different times and menu items
+INSERT INTO orders (order_id, staff_id, create_time, status) VALUES
+  ('ORD004', 'U001', '2025-08-17 10:30:00', 'completed'),
+  ('ORD005', 'U002', '2025-08-17 11:45:00', 'completed'),
+  ('ORD006', 'U003', '2025-08-17 14:15:00', 'completed'),
+  ('ORD007', 'U001', '2025-08-17 18:30:00', 'completed'),
+  ('ORD008', 'U002', '2025-08-16 12:00:00', 'completed'),
+  ('ORD009', 'U003', '2025-08-16 15:30:00', 'completed');
+
+-- Add corresponding payments
+INSERT INTO payment (payment_id, order_id, method, amount) VALUES
+  ('PAY004', 'ORD004', 'cash', 45000),
+  ('PAY005', 'ORD005', 'momo', 60000),
+  ('PAY006', 'ORD006', 'cash', 35000),
+  ('PAY007', 'ORD007', 'cash', 70000),
+  ('PAY008', 'ORD008', 'momo', 55000),
+  ('PAY009', 'ORD009', 'cash', 90000);
+
+-- Add order details with variety
+INSERT INTO order_detail (order_detail_id, order_id, drink_id, quantity, total) VALUES
+  ('OD006', 'ORD004', 'D005', 1, 25000), -- Ca phe sua da
+  ('OD007', 'ORD004', 'D007', 1, 35000), -- Americano
+  ('OD008', 'ORD005', 'D006', 2, 60000), -- Bac siu
+  ('OD009', 'ORD006', 'D004', 1, 20000), -- Ca phe den da
+  ('OD010', 'ORD006', 'D005', 1, 25000), -- Ca phe sua da
+  ('OD011', 'ORD007', 'D007', 2, 70000), -- Americano
+  ('OD012', 'ORD008', 'D005', 1, 25000), -- Ca phe sua da
+  ('OD013', 'ORD008', 'D006', 1, 30000), -- Bac siu
+  ('OD014', 'ORD009', 'D004', 3, 60000); -- Ca phe den da (3 cups)
+
+-- Add more recent revenue statistics
+INSERT INTO revenue_statistics (statistic_id, start_date, end_date, total_revenue, total_orders) VALUES
+  ('REV004', '2025-08-09', '2025-08-15', 4500000, 42),
+  ('REV005', '2025-08-02', '2025-08-08', 3800000, 35);
+
+-- Add more recipes
+INSERT INTO recipe (recipe_id, name, serving_size) VALUES
+  ('R008', 'Tra sua', 350),
+  ('R009', 'Tra dao', 300),
+  ('R010', 'Sinh to', 400);
+
+-- Add more drinks
+INSERT INTO drink (drink_id, name, unit, price, recipe_id, image_url) VALUES
+  ('D008', 'Tra sua tran chau', 'ly', 40000, 'R008', 'http://localhost:3000/static/images/D008.jpg'),
+  ('D009', 'Tra dao cam sa', 'ly', 35000, 'R009', 'http://localhost:3000/static/images/D009.jpg'),
+  ('D010', 'Sinh to bo', 'ly', 45000, 'R010', 'http://localhost:3000/static/images/D010.jpg');
+
+-- Add more menu items
+INSERT INTO menu_item (item_id, name, category, description, base_price, cost) VALUES
+  ('D008', 'Tra sua tran chau', 'Tea', 'Tra sua kem tran chau dai, ngot vua phai.', 40000, 15000),
+  ('D009', 'Tra dao cam sa', 'Tea', 'Tra dao tuoi kem cam sa, vi thanh mat.', 35000, 12000),
+  ('D010', 'Sinh to bo', 'Smoothie', 'Sinh to bo nguyen chat, beo ngay.', 45000, 18000);
+
+-- Update some orders to include new drinks
+INSERT INTO order_detail (order_detail_id, order_id, drink_id, quantity, total) VALUES
+  ('OD015', 'ORD001', 'D008', 1, 40000), -- Tra sua tran chau
+  ('OD016', 'ORD003', 'D009', 1, 35000), -- Tra dao cam sa
+  ('OD017', 'ORD005', 'D010', 1, 45000); -- Sinh to bo
+
+-- Add more ingredients
+INSERT INTO ingredient (ingredient_id, name, unit, unit_price, current_stock) VALUES
+  ('ING005', 'Tra sua', 'kg', 150000, 8.0),
+  ('ING006', 'Tran chau', 'kg', 80000, 5.0),
+  ('ING007', 'Dao tuoi', 'kg', 120000, 3.0),
+  ('ING008', 'Cam sa', 'kg', 90000, 2.0),
+  ('ING009', 'Bo', 'kg', 180000, 6.0),
+  ('ING010', 'Sua tuoi', 'l', 30000, 15.0);
+
+-- Add recipe ingredients for new drinks
+INSERT INTO recipe_ingredient (recipe_id, ingredient_id, quantity) VALUES
+  ('R008', 'ING005', 0.03), -- Tra sua
+  ('R008', 'ING006', 0.05), -- Tran chau
+  ('R008', 'ING003', 0.02), -- Duong
+  ('R009', 'ING007', 0.04), -- Dao tuoi
+  ('R009', 'ING008', 0.01), -- Cam sa
+  ('R010', 'ING009', 0.10), -- Bo
+  ('R010', 'ING010', 0.15); -- Sua tuoi

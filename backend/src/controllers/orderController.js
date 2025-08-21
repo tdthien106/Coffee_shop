@@ -25,13 +25,14 @@ class OrderController {
 
   static async addItem(req, res) {
     try {
-      const { drink_id, quantity, unit_price, discount } = req.body;
+      const { drink_id, quantity, unit_price, discount, note} = req.body;
       const item = await OrderModel.addItem(
         req.params.orderId,
         drink_id,
-        Number(quantity || 1),
-        unit_price,
-        discount
+        Number(quantity ?? 1),
+        unit_price ?? null ,
+        Number(discount ?? 0),
+        note ?? null
       );
       res.json({ success:true, data:item });
     } catch (err) {

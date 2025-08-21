@@ -5,13 +5,21 @@ export const getDashboardStats = async (req, res) => {
     // Get date range (default to last 30 days)
     const endDate = new Date();
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 30);
+    startDate.setDate(endDate.getDate() - 30);
 
-    // Format dates for SQL queries
-    const startDateStr = startDate.toISOString().split('T')[0];
-    const endDateStr = endDate.toISOString().split('T')[0];
+    // Calculate previous period dates (30 days before the current period)
+    const prevStartDate = new Date(startDate);
+    prevStartDate.setDate(startDate.getDate() - 30);
+    const prevEndDate = new Date(startDate); // Previous period ends when current period starts
 
-    // Query for summary statistics
+    // Format dates for SQL queries (PostgreSQL compatible format)
+    const formatDate = (date) => date.toISOString().slice(0, 19).replace('T', ' ');
+    const startDateStr = formatDate(startDate);
+    const endDateStr = formatDate(endDate);
+    const prevStartDateStr = formatDate(prevStartDate);
+    const prevEndDateStr = formatDate(prevEndDate);
+
+    // Query for summary statistics (optimized for PostgreSQL)
     const summaryQuery = `
       SELECT 
         COUNT(o.order_id) AS order_count,
@@ -19,21 +27,22 @@ export const getDashboardStats = async (req, res) => {
         (SELECT COUNT(*) FROM employees WHERE end_date IS NULL AND position = 'Staff') AS staff_count
       FROM orders o
       LEFT JOIN payment p ON o.payment_id = p.payment_id
-      WHERE o.create_time BETWEEN $1 AND $2
+      WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
     `;
-    // Query for net revenue (with trend calculation)
+
+    // Net revenue query with explicit timestamp casting
     const netRevenueQuery = `
       WITH current_period AS (
         SELECT COALESCE(SUM(p.amount), 0) AS revenue
         FROM payment p
         JOIN orders o ON p.order_id = o.order_id
-        WHERE p.payment_date BETWEEN $1 AND $2
+        WHERE p.payment_date BETWEEN $1::timestamp AND $2::timestamp
       ),
       previous_period AS (
         SELECT COALESCE(SUM(p.amount), 0) AS revenue
         FROM payment p
         JOIN orders o ON p.order_id = o.order_id
-        WHERE p.payment_date BETWEEN $3 AND $4
+        WHERE p.payment_date BETWEEN $3::timestamp AND $4::timestamp
       )
       SELECT 
         cp.revenue AS current_revenue,
@@ -46,37 +55,38 @@ export const getDashboardStats = async (req, res) => {
       FROM current_period cp, previous_period pp
     `;
 
-    // Query for reserve classification (assuming this is about inventory value)
-    const reserveQuery = `
-      SELECT COALESCE(SUM(i.current_stock * i.unit_price), 0) AS reserve_value
-      FROM ingredient i
-    `;
-
-    // Query for revenue orders (top orders by value)
+    // Other queries with timestamp casting
     const revenueOrdersQuery = `
       SELECT 
         o.order_id,
-        'HCMUS - 227NVC' AS location,  -- Hardcoded for now, could be from store table
+        'HCMUS - 227NVC' AS location,
         p.amount AS value
       FROM orders o
       JOIN payment p ON o.payment_id = p.payment_id
-      WHERE o.create_time BETWEEN $1 AND $2
+      WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
       ORDER BY p.amount DESC
       LIMIT 5
     `;
 
-    // Query for rush hour analysis
     const rushHourQuery = `
       SELECT 
-        EXTRACT(HOUR FROM o.create_time) AS hour,
+        EXTRACT(HOUR FROM o.create_time)::integer AS hour,
         COUNT(*) AS order_count
       FROM orders o
-      WHERE o.create_time BETWEEN $1 AND $2
+      WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
       GROUP BY hour
       ORDER BY hour
     `;
-
-    // Query for menu proportion
+    const revenueByHourQuery = `
+      SELECT 
+        EXTRACT(HOUR FROM o.create_time)::integer AS hour,
+        COALESCE(SUM(p.amount), 0) AS revenue
+      FROM orders o
+      JOIN payment p ON o.payment_id = p.payment_id
+      WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
+      GROUP BY hour
+      ORDER BY hour
+    `;
     const menuProportionQuery = `
       SELECT 
         m.category,
@@ -84,30 +94,22 @@ export const getDashboardStats = async (req, res) => {
       FROM order_detail od
       JOIN menu_item m ON od.drink_id = m.item_id
       JOIN orders o ON od.order_id = o.order_id
-      WHERE o.create_time BETWEEN $1 AND $2
+      WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
       GROUP BY m.category
     `;
 
-    // Query for recent orders
     const recentOrdersQuery = `
       SELECT 
         o.order_id,
-        'HCMUS - 227NVC' AS location,  -- Hardcoded for now
+        'HCMUS - 227NVC' AS location,
         p.amount AS value,
         o.create_time AS timestamp
       FROM orders o
       JOIN payment p ON o.payment_id = p.payment_id
-      WHERE o.create_time BETWEEN $1 AND $2
+      WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
       ORDER BY o.create_time DESC
       LIMIT 5
     `;
-
-    // Calculate previous period dates (30 days before the current period)
-    const prevStartDate = new Date(startDate);
-    prevStartDate.setDate(prevStartDate.getDate() - 30);
-    const prevEndDate = new Date(startDate);
-    const prevStartDateStr = prevStartDate.toISOString().split('T')[0];
-    const prevEndDateStr = prevEndDate.toISOString().split('T')[0];
 
     // Execute all queries
     const [
@@ -117,32 +119,56 @@ export const getDashboardStats = async (req, res) => {
       revenueOrdersResult,
       rushHourResult,
       menuProportionResult,
-      recentOrdersResult
+      recentOrdersResult,
+      revenueByHourResult,
+      previousRevenueByHourResult
     ] = await Promise.all([
       db.query(summaryQuery, [startDateStr, endDateStr]),
       db.query(netRevenueQuery, [startDateStr, endDateStr, prevStartDateStr, prevEndDateStr]),
-      db.query(reserveQuery),
+      db.query('SELECT COALESCE(SUM(i.current_stock * i.unit_price), 0) AS reserve_value FROM ingredient i'),
       db.query(revenueOrdersQuery, [startDateStr, endDateStr]),
       db.query(rushHourQuery, [startDateStr, endDateStr]),
       db.query(menuProportionQuery, [startDateStr, endDateStr]),
-      db.query(recentOrdersQuery, [startDateStr, endDateStr])
+      db.query(recentOrdersQuery, [startDateStr, endDateStr]),
+      db.query(revenueByHourQuery, [startDateStr, endDateStr]),
+      db.query(revenueByHourQuery, [prevStartDateStr, prevEndDateStr])
     ]);
+    // Handle empty data cases
+    const allHours = Array.from({length: 24}, (_, i) => i);
+    const revenueByHour = allHours.map(hour => {
+      const current = revenueByHourResult.rows.find(r => r.hour === hour);
+      const previous = previousRevenueByHourResult.rows.find(r => r.hour === hour);
+      
+      return {
+        hour,
+        currentRevenue: current?.revenue || 0,
+        previousRevenue: previous?.revenue || 0
+      };
+    });
+    const maxRevenue = Math.max(...revenueByHour.map(h => h.currentRevenue), 1);
 
-    // Find peak hour from rush hour data
-    const rushHourData = rushHourResult.rows;
-    let peakHour = null;
-    if (rushHourData.length > 0) {
-      peakHour = rushHourData.reduce((prev, current) => 
-        (prev.order_count > current.order_count) ? prev : current
-      ).hour;
-    }
+        const rushHourData = allHours.map(hour => {
+      const existing = rushHourResult.rows.find(r => r.hour === hour);
+      return existing || { hour, order_count: 0 };
+    });
 
-    // Format the response
+    const peakHour = rushHourData.reduce((prev, current) => 
+      (prev.order_count > current.order_count) ? prev : current
+    ).hour;
+
+    // Calculate menu proportions with percentages
+    const totalMenuItems = menuProportionResult.rows.reduce((sum, item) => sum + item.order_count, 0);
+    const menuProportionWithPercentage = menuProportionResult.rows.map(item => ({
+      ...item,
+      percentage: totalMenuItems > 0 ? Math.round((item.order_count / totalMenuItems) * 100) : 0
+    }));
+
+    // Format response
     const response = {
       storeInfo: {
         name: "MAT COFFEE SHOP",
         currentStore: "HotMédecine",
-        period: "30 days"
+        period: `${formatDate(startDate)} to ${formatDate(endDate)}`
       },
       summaryStats: {
         orders: summaryResult.rows[0]?.order_count || 0,
@@ -150,39 +176,40 @@ export const getDashboardStats = async (req, res) => {
         staffs: summaryResult.rows[0]?.staff_count || 0
       },
       netRevenue: {
-        value: (netRevenueResult.rows[0]?.current_revenue || 0) / 1000000, // Convert to million VND
+        value: (netRevenueResult.rows[0]?.current_revenue || 0) / 1000000,
         unit: "Million VND",
-        trend: netRevenueResult.rows[0]?.trend || "neutral"
+        trend: netRevenueResult.rows[0]?.trend || "neutral",
+        percentageChange: netRevenueResult.rows[0]?.previous_revenue 
+          ? ((netRevenueResult.rows[0].current_revenue - netRevenueResult.rows[0].previous_revenue) / 
+             netRevenueResult.rows[0].previous_revenue * 100).toFixed(2)
+          : 0
       },
       reserveClassification: {
-        value: (reserveResult.rows[0]?.reserve_value || 0) / 1000000, // Convert to million VND
+        value: (reserveResult.rows[0]?.reserve_value || 0) / 1000000,
         unit: "Million VND"
       },
-      revenueOrders: revenueOrdersResult.rows.map(row => ({
-        location: row.location,
-        orderId: row.order_id,
-        value: row.value
-      })),
+      revenueOrders: revenueOrdersResult.rows,
       rushHour: {
         data: rushHourData,
-        peakHour: peakHour,
-        unit: "Port"
+        peakHour,
+        unit: "Orders"
       },
       menuProportion: {
-        data: menuProportionResult.rows,
-        unit: "Port"
+        data: menuProportionWithPercentage,
+        unit: "Orders"
       },
-      recentOrders: recentOrdersResult.rows.map(row => ({
-        orderId: row.order_id,
-        location: row.location,
-        value: row.value,
-        timestamp: row.timestamp
-      }))
+      recentOrders: recentOrdersResult.rows
     };
 
     res.json(response);
   } catch (error) {
     console.error('Error fetching dashboard stats:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ 
+      message: 'Internal server error',
+      ...(process.env.NODE_ENV === 'development' && { 
+        error: error.message,
+        stack: error.stack 
+      })
+    });
   }
 };
