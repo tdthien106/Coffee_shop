@@ -22,10 +22,9 @@ indexRoutes.use("/orders", orderRoutes);
 indexRoutes.use("/drinks", drinkRoutes);
 indexRoutes.use("/menu/items", menuItemRoutes);
 indexRoutes.use("/payments", paymentRoutes);
-indexRoutes.use("/exports", exportRoutes);
 indexRoutes.use("/checkout", checkoutRoutes);
 indexRoutes.use("/home", homeRoutes)
 indexRoutes.use("/revenue", revenueRoutes)
-
+indexRoutes.use("/export", exportRoutes);
 
 export default indexRoutes;

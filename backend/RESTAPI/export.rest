@@ -1,9 +1,4 @@
-POST http://localhost:3000/api/exports
-Content-Type: application/json
+GET http://localhost:3000/api/export/orders?from=2025-08-01&to=2025-08-19
 
-{
-  "category": "order",
-  "from": "2025-08-01",
-  "to": "2025-08-19",
-  "store": "1"
-}
+
+GET http://localhost:3000/api/export/employees
