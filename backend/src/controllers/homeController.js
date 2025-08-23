@@ -1,4 +1,4 @@
-import db from '../config/db.js';
+import db from "../config/db.js";
 
 export const getDashboardStats = async (req, res) => {
   try {
@@ -13,33 +13,33 @@ export const getDashboardStats = async (req, res) => {
     const prevEndDate = new Date(startDate); // Previous period ends when current period starts
 
     // Format dates for SQL queries (PostgreSQL compatible format)
-    const formatDate = (date) => date.toISOString().slice(0, 19).replace('T', ' ');
+    const formatDate = (date) =>
+      date.toISOString().slice(0, 19).replace("T", " ");
     const startDateStr = formatDate(startDate);
     const endDateStr = formatDate(endDate);
     const prevStartDateStr = formatDate(prevStartDate);
     const prevEndDateStr = formatDate(prevEndDate);
 
-    // Query for summary statistics (optimized for PostgreSQL)
+    // ---------- SQL QUERIES (đã ép kiểu số) ----------
     const summaryQuery = `
       SELECT 
-        COUNT(o.order_id) AS order_count,
-        COALESCE(SUM(p.amount), 0) AS total_revenue,
-        (SELECT COUNT(*) FROM employees WHERE end_date IS NULL AND position = 'Staff') AS staff_count
+        COUNT(o.order_id)::int AS order_count,
+        COALESCE(SUM(p.amount), 0)::bigint AS total_revenue,
+        (SELECT COUNT(*)::int FROM employees WHERE end_date IS NULL AND position = 'Staff') AS staff_count
       FROM orders o
-      LEFT JOIN payment p ON o.payment_id = p.payment_id
+      LEFT JOIN payment p ON p.order_id = o.order_id
       WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
     `;
 
-    // Net revenue query with explicit timestamp casting
     const netRevenueQuery = `
       WITH current_period AS (
-        SELECT COALESCE(SUM(p.amount), 0) AS revenue
+        SELECT COALESCE(SUM(p.amount), 0)::bigint AS revenue
         FROM payment p
         JOIN orders o ON p.order_id = o.order_id
         WHERE p.payment_date BETWEEN $1::timestamp AND $2::timestamp
       ),
       previous_period AS (
-        SELECT COALESCE(SUM(p.amount), 0) AS revenue
+        SELECT COALESCE(SUM(p.amount), 0)::bigint AS revenue
         FROM payment p
         JOIN orders o ON p.order_id = o.order_id
         WHERE p.payment_date BETWEEN $3::timestamp AND $4::timestamp
@@ -55,14 +55,13 @@ export const getDashboardStats = async (req, res) => {
       FROM current_period cp, previous_period pp
     `;
 
-    // Other queries with timestamp casting
     const revenueOrdersQuery = `
       SELECT 
         o.order_id,
         'HCMUS - 227NVC' AS location,
-        p.amount AS value
+        p.amount::bigint AS value
       FROM orders o
-      JOIN payment p ON o.payment_id = p.payment_id
+      JOIN payment p ON p.order_id = o.order_id
       WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
       ORDER BY p.amount DESC
       LIMIT 5
@@ -70,27 +69,29 @@ export const getDashboardStats = async (req, res) => {
 
     const rushHourQuery = `
       SELECT 
-        EXTRACT(HOUR FROM o.create_time)::integer AS hour,
-        COUNT(*) AS order_count
+        EXTRACT(HOUR FROM o.create_time)::int AS hour,
+        COUNT(*)::int AS order_count
       FROM orders o
       WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
       GROUP BY hour
       ORDER BY hour
     `;
+
     const revenueByHourQuery = `
       SELECT 
-        EXTRACT(HOUR FROM o.create_time)::integer AS hour,
-        COALESCE(SUM(p.amount), 0) AS revenue
+        EXTRACT(HOUR FROM o.create_time)::int AS hour,
+        COALESCE(SUM(p.amount), 0)::bigint AS revenue
       FROM orders o
-      JOIN payment p ON o.payment_id = p.payment_id
+      JOIN payment p ON p.order_id = o.order_id
       WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
       GROUP BY hour
       ORDER BY hour
     `;
+
     const menuProportionQuery = `
       SELECT 
         m.category,
-        COUNT(od.drink_id) AS order_count
+        COUNT(od.drink_id)::int AS order_count
       FROM order_detail od
       JOIN menu_item m ON od.drink_id = m.item_id
       JOIN orders o ON od.order_id = o.order_id
@@ -102,16 +103,16 @@ export const getDashboardStats = async (req, res) => {
       SELECT 
         o.order_id,
         'HCMUS - 227NVC' AS location,
-        p.amount AS value,
+        p.amount::bigint AS value,
         o.create_time AS timestamp
       FROM orders o
-      JOIN payment p ON o.payment_id = p.payment_id
+      JOIN payment p ON p.order_id = o.order_id
       WHERE o.create_time BETWEEN $1::timestamp AND $2::timestamp
       ORDER BY o.create_time DESC
       LIMIT 5
     `;
 
-    // Execute all queries
+    // ---------- EXECUTE ----------
     const [
       summaryResult,
       netRevenueResult,
@@ -121,95 +122,140 @@ export const getDashboardStats = async (req, res) => {
       menuProportionResult,
       recentOrdersResult,
       revenueByHourResult,
-      previousRevenueByHourResult
+      previousRevenueByHourResult,
     ] = await Promise.all([
       db.query(summaryQuery, [startDateStr, endDateStr]),
-      db.query(netRevenueQuery, [startDateStr, endDateStr, prevStartDateStr, prevEndDateStr]),
-      db.query('SELECT COALESCE(SUM(i.current_stock * i.unit_price), 0) AS reserve_value FROM ingredient i'),
+      db.query(netRevenueQuery, [
+        startDateStr,
+        endDateStr,
+        prevStartDateStr,
+        prevEndDateStr,
+      ]),
+      db.query(
+        "SELECT COALESCE(SUM(i.current_stock * i.unit_price), 0)::bigint AS reserve_value FROM ingredient i"
+      ),
       db.query(revenueOrdersQuery, [startDateStr, endDateStr]),
       db.query(rushHourQuery, [startDateStr, endDateStr]),
       db.query(menuProportionQuery, [startDateStr, endDateStr]),
       db.query(recentOrdersQuery, [startDateStr, endDateStr]),
       db.query(revenueByHourQuery, [startDateStr, endDateStr]),
-      db.query(revenueByHourQuery, [prevStartDateStr, prevEndDateStr])
+      db.query(revenueByHourQuery, [prevStartDateStr, prevEndDateStr]),
     ]);
+
+    // ---------- JS SAFETY LAYER ----------
+    const asNumber = (v) => Number(String(v).replace(/[^\d.-]/g, ""));
+
+    const summaryRow = summaryResult.rows[0] || {};
+    const netRow = netRevenueResult.rows[0] || {};
+
+    const orders = asNumber(summaryRow.order_count || 0);
+    const revenue = asNumber(summaryRow.total_revenue || 0);
+    const staffs = asNumber(summaryRow.staff_count || 0);
+
+    const currentRevenue = asNumber(netRow.current_revenue || 0);
+    const previousRevenue = asNumber(netRow.previous_revenue || 0);
+    const percentageChange =
+      previousRevenue > 0
+        ? ((currentRevenue - previousRevenue) / previousRevenue) * 100
+        : 0;
+
     // Handle empty data cases
-    const allHours = Array.from({length: 24}, (_, i) => i);
-    const revenueByHour = allHours.map(hour => {
-      const current = revenueByHourResult.rows.find(r => r.hour === hour);
-      const previous = previousRevenueByHourResult.rows.find(r => r.hour === hour);
-      
+    const allHours = Array.from({ length: 24 }, (_, i) => i);
+
+    // map revenue by hour (current vs previous)
+    const revenueByHour = allHours.map((hour) => {
+      const current = revenueByHourResult.rows.find((r) => r.hour === hour);
+      const previous = previousRevenueByHourResult.rows.find(
+        (r) => r.hour === hour
+      );
       return {
         hour,
-        currentRevenue: current?.revenue || 0,
-        previousRevenue: previous?.revenue || 0
+        currentRevenue: asNumber(current?.revenue || 0),
+        previousRevenue: asNumber(previous?.revenue || 0),
       };
     });
-    const maxRevenue = Math.max(...revenueByHour.map(h => h.currentRevenue), 1);
 
-        const rushHourData = allHours.map(hour => {
-      const existing = rushHourResult.rows.find(r => r.hour === hour);
-      return existing || { hour, order_count: 0 };
+    const rushHourData = allHours.map((hour) => {
+      const existing = rushHourResult.rows.find((r) => r.hour === hour);
+      return existing
+        ? { hour: existing.hour, order_count: asNumber(existing.order_count) }
+        : { hour, order_count: 0 };
     });
 
-    const peakHour = rushHourData.reduce((prev, current) => 
-      (prev.order_count > current.order_count) ? prev : current
+    const peakHour = rushHourData.reduce(
+      (prev, curr) => (prev.order_count > curr.order_count ? prev : curr),
+      { hour: 0, order_count: 0 }
     ).hour;
 
     // Calculate menu proportions with percentages
-    const totalMenuItems = menuProportionResult.rows.reduce((sum, item) => sum + item.order_count, 0);
-    const menuProportionWithPercentage = menuProportionResult.rows.map(item => ({
-      ...item,
-      percentage: totalMenuItems > 0 ? Math.round((item.order_count / totalMenuItems) * 100) : 0
-    }));
+    const totalMenuItems = menuProportionResult.rows.reduce(
+      (sum, item) => sum + asNumber(item.order_count),
+      0
+    );
 
-    // Format response
+    const menuProportionWithPercentage = menuProportionResult.rows.map(
+      (item) => {
+        const count = asNumber(item.order_count);
+        return {
+          ...item,
+          order_count: count,
+          percentage:
+            totalMenuItems > 0 ? Math.round((count / totalMenuItems) * 100) : 0,
+        };
+      }
+    );
+
+    // ---------- RESPONSE ----------
     const response = {
       storeInfo: {
         name: "MAT COFFEE SHOP",
         currentStore: "HotMédecine",
-        period: `${formatDate(startDate)} to ${formatDate(endDate)}`
+        period: `${formatDate(startDate)} to ${formatDate(endDate)}`,
       },
       summaryStats: {
-        orders: summaryResult.rows[0]?.order_count || 0,
-        revenue: summaryResult.rows[0]?.total_revenue || 0,
-        staffs: summaryResult.rows[0]?.staff_count || 0
+        orders,
+        revenue,
+        staffs,
       },
       netRevenue: {
-        value: (netRevenueResult.rows[0]?.current_revenue || 0) / 1000000,
-        unit: "Million VND",
-        trend: netRevenueResult.rows[0]?.trend || "neutral",
-        percentageChange: netRevenueResult.rows[0]?.previous_revenue 
-          ? ((netRevenueResult.rows[0].current_revenue - netRevenueResult.rows[0].previous_revenue) / 
-             netRevenueResult.rows[0].previous_revenue * 100).toFixed(2)
-          : 0
+        value: asNumber(netRow.current_revenue || 0),
+        unit: "VND",
+        trend: netRow.trend || "neutral",
+        percentageChange,
       },
       reserveClassification: {
-        value: (reserveResult.rows[0]?.reserve_value || 0) / 1000000,
-        unit: "Million VND"
+        value: asNumber(reserveResult.rows[0]?.reserve_value || 0) / 1_000_000,
+        unit: "Million VND",
       },
-      revenueOrders: revenueOrdersResult.rows,
+      revenueOrders: revenueOrdersResult.rows.map((r) => ({
+        ...r,
+        value: asNumber(r.value),
+      })),
       rushHour: {
         data: rushHourData,
         peakHour,
-        unit: "Orders"
+        unit: "Orders",
       },
       menuProportion: {
         data: menuProportionWithPercentage,
-        unit: "Orders"
+        unit: "Orders",
       },
-      recentOrders: recentOrdersResult.rows
+      recentOrders: recentOrdersResult.rows.map((r) => ({
+        ...r,
+        value: asNumber(r.value),
+      })),
+      revenueByHour, // nếu frontend cần vẽ chart theo giờ
     };
 
     res.json(response);
   } catch (error) {
-    console.error('Error fetching dashboard stats:', error);
-    res.status(500).json({ 
-      message: 'Internal server error',
-      ...(process.env.NODE_ENV === 'development' && { 
+    console.error("Error fetching dashboard stats:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      ...(process.env.NODE_ENV === "development" && {
         error: error.message,
-        stack: error.stack 
-      })
+        stack: error.stack,
+      }),
     });
   }
 };
