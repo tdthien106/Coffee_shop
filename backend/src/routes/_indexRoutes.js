@@ -9,6 +9,7 @@ import paymentRoutes from './paymentRoutes.js';
 import authRoutes from './authRoutes.js';
 import homeRoutes from "./homeRoutes.js";
 import exportRoutes from "./exportRoutes.js";
+import revenueRoutes from "./revenueRoutes.js"
 
 import checkoutRoutes from "./checkoutRoutes.js";
 
@@ -24,5 +25,7 @@ indexRoutes.use("/payments", paymentRoutes);
 indexRoutes.use("/exports", exportRoutes);
 indexRoutes.use("/checkout", checkoutRoutes);
 indexRoutes.use("/home", homeRoutes)
+indexRoutes.use("/revenue", revenueRoutes)
+
 
 export default indexRoutes;

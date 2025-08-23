@@ -5,6 +5,8 @@
   gap: 5px;
   width: 100%;
   height: calc(100vh - 56px);
+  padding: 0px 0px;
+  margin: 0px;
 }
 .content {
   min-width: 0;
