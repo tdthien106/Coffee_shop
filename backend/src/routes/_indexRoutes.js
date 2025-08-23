@@ -10,6 +10,7 @@ import authRoutes from './authRoutes.js';
 import homeRoutes from "./homeRoutes.js";
 import exportRoutes from "./exportRoutes.js";
 import revenueRoutes from "./revenueRoutes.js"
+import shiftRoutes from "./shiftRoutes.js";
 
 import checkoutRoutes from "./checkoutRoutes.js";
 
@@ -26,5 +27,6 @@ indexRoutes.use("/checkout", checkoutRoutes);
 indexRoutes.use("/home", homeRoutes)
 indexRoutes.use("/revenue", revenueRoutes)
 indexRoutes.use("/export", exportRoutes);
+indexRoutes.use("/shifts", shiftRoutes)
 
 export default indexRoutes;

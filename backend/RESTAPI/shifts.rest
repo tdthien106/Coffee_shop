@@ -1,0 +1,7 @@
+###Lấy tất cả các ca làm việc
+
+
+
+GET http://localhost:3000/api/shifts/SH_20250822_C1
+
+

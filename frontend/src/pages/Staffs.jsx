@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const API = "http://localhost:3000/api";
 
@@ -47,6 +47,46 @@ function FindStaff(){
   const [err, setErr] = useState("");
   const [userID, setUserID] = useState("");
   const [employeeId, setEmployeeId] = useState("");
+  const [staffList, setStaffList] = useState([]);
+
+  useEffect(() => {
+    const fetchStaff = async () => {
+      try {
+        setLoading(true);
+
+        // Lấy tất cả nhân viên
+        const empRes = await fetch(`${API}/employees`);
+        const empJson = await empRes.json();
+
+        // Lấy tất cả users
+        const userRes = await fetch(`${API}/users`);
+        const userJson = await userRes.json();
+
+        // Gộp dữ liệu employee với user
+        const merged = (empJson.data || []).map((emp) => {
+          const user = (userJson.data || []).find(
+            (u) => u.user_id === emp.user_id
+          );
+          return {
+            employeeId: emp.employee_id,
+            userId: emp.user_id,
+            fullName: user?.name || "N/A",
+            position: emp.position,
+          };
+        });
+
+        setStaffList(merged);
+      } catch (err) {
+        console.error(err);
+        setErr("Không thể tải danh sách nhân viên");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStaff();
+  }, []);
+
 
   const onSearch = async () => {
     setLoading(true);
@@ -175,6 +215,21 @@ const onDelete = async () => {
 
       {loading && <div style={{marginTop:16, color:'#888'}}>Đang tải...</div>}
       {err && <div style={{marginTop:16, color:'red'}}>{err}</div>}
+    {/* Danh sách nhân viên */}
+      <div className="staff-list">
+        <h3>Danh sách nhân viên</h3>
+        <ul>
+          {staffList.map((staff) => (
+            <li
+              key={staff.employeeId}
+              style={{ cursor: "pointer", padding: "4px 0" }}
+              onClick={() => onSearch(staff.employeeId)}
+            >
+              <b>{staff.employeeId}</b> - {staff.fullName}
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {form && (
         <div className="profile">
@@ -355,17 +410,127 @@ function SalaryView(){
 }
 
 /* ---------- Scheduling + modal ---------- */
-function SchedulingView(){
-  const [open,setOpen] = useState(false);
-  const [storeName,setStore] = useState("");
-  const openModal = (name)=>{ setStore(name); setOpen(true); };
+/*function SchedulingView() {
+  const [open, setOpen] = useState(false);
+  const [storeName, setStore] = useState("");
+  const [currentWeek, setCurrentWeek] = useState(26);
+  const [currentYear, setCurrentYear] = useState(2025);
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 23));
+  const [staffData, setStaffData] = useState({});
+  const [selectedStaff, setSelectedStaff] = useState(null);
+
+  const openModal = (name) => { 
+    setStore(name); 
+    setOpen(true); 
+  };
+
+  // Dữ liệu mẫu các cửa hàng
+  const STORES = [
+    { id: 1, name: "Cửa Hàng Quận 1", working: "320 giờ", late: 3, early: 2 },
+    { id: 2, name: "Cửa Hàng Quận 2", working: "280 giờ", late: 1, early: 4 },
+    { id: 3, name: "Cửa Hàng Quận 3", working: "350 giờ", late: 5, early: 1 },
+    { id: 4, name: "Cửa Hàng Quận 4", working: "300 giờ", late: 2, early: 3 }
+  ];
+
+  // Dữ liệu mẫu nhân viên
+  const STAFF_MEMBERS = {
+    1: ["Nguyễn Văn A", "Trần Thị B", "Lê Văn C", "Phạm Thị D"],
+    2: ["Nguyễn Văn E", "Trần Thị F", "Lê Văn G"],
+    3: ["Nguyễn Văn H", "Trần Thị I", "Lê Văn K", "Phạm Thị L", "Hoàng Văn M"],
+    4: ["Nguyễn Văn N", "Trần Thị O"]
+  };
+
+  // Tính toán ngày trong tuần
+  const getWeekDates = () => {
+    const startDate = new Date(currentDate);
+    startDate.setDate(currentDate.getDate() - currentDate.getDay() + 1); // Thứ 2
+    
+    const days = [];
+    for (let i = 0; i < 5; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      days.push(date);
+    }
+    
+    return days;
+  };
+
+  // Định dạng ngày thành dd/mm
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}/${month}`;
+  };
+
+  // Thay đổi tuần
+  const changeWeek = (direction) => {
+    const newWeek = currentWeek + direction;
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + (direction * 7));
+    
+    let newYear = currentYear;
+    
+    if (newWeek > 52) {
+      setCurrentWeek(1);
+      newYear = currentYear + 1;
+      setCurrentYear(newYear);
+    } else if (newWeek < 1) {
+      setCurrentWeek(52);
+      newYear = currentYear - 1;
+      setCurrentYear(newYear);
+    } else {
+      setCurrentWeek(newWeek);
+    }
+    
+    setCurrentDate(newDate);
+  };
+
+  // Xử lý thay đổi ca làm việc
+  const handleShiftChange = (dayIndex, shiftIndex, staffName) => {
+    setStaffData(prev => {
+      const newData = {...prev};
+      const dayId = `day-${dayIndex}`;
+      const shiftId = `shift-${shiftIndex}`;
+      
+      if (!newData[dayId]) {
+        newData[dayId] = {};
+      }
+      
+      // Gán nhân viên vào ca mới
+      if (staffName) {
+        newData[dayId][shiftId] = staffName;
+      } else {
+        delete newData[dayId][shiftId];
+      }
+      
+      return newData;
+    });
+  };
+
+  // Lấy nhân viên đã được giao cho ca cụ thể
+  const getAssignedStaff = (dayIndex, shiftIndex) => {
+    const dayId = `day-${dayIndex}`;
+    const shiftId = `shift-${shiftIndex}`;
+    return staffData[dayId]?.[shiftId] || '';
+  };
+
+  // Lưu dữ liệu
+  const saveData = () => {
+    alert('Dữ liệu đã được lưu!');
+    console.log('Dữ liệu nhân viên:', staffData);
+    // Ở đây bạn có thể thêm code để gửi dữ liệu đến server
+  };
+
+  const weekDates = getWeekDates();
+  const storeId = STORES.find(store => store.name === storeName)?.id || 1;
+  const staffNames = STAFF_MEMBERS[storeId] || ["Nguyễn Văn A", "Nguyễn Văn B", "Nguyễn Văn C"];
 
   return (
     <>
       <div className="panel">
         <div className="store-list">
-          {STORES.map(s=>(
-            <div key={s.id} className="store clickable" onClick={()=>openModal(s.name)}>
+          {STORES.map(s => (
+            <div key={s.id} className="store clickable" onClick={() => openModal(s.name)}>
               <div className="row">
                 <div className="badge">🏛</div>
                 <div className="name">{s.name}</div>
@@ -382,33 +547,58 @@ function SchedulingView(){
       </div>
 
       {open && (
-        <div className="modal" onClick={(e)=>{ if(e.target.classList.contains('modal')) setOpen(false) }}>
+        <div className="modal" onClick={(e) => { if (e.target.classList.contains('modal')) setOpen(false) }}>
           <div className="modal-card">
             <div className="modal-head">
               <div>{storeName}</div>
-              <button className="close" onClick={()=>setOpen(false)}>X</button>
+              <button className="close" onClick={() => setOpen(false)}>X</button>
             </div>
             <div className="modal-body">
               <div className="toolbar">
-                <span className="week">Week 26 – 06/2025</span>
-                <button className="btn save">SAVE</button>
+                <div className="week-navigation">
+                  <button onClick={() => changeWeek(-1)}>&lt;</button>
+                  <span className="week">Week {currentWeek} – {currentDate.getMonth() + 1}/{currentYear}</span>
+                  <button onClick={() => changeWeek(1)}>&gt;</button>
+                </div>
+                <button className="btn save" onClick={saveData}>SAVE</button>
               </div>
+              
               <table className="tbl">
                 <thead>
                   <tr>
-                    <th className="staff-col">Staffs</th>
-                    <th>Mon<br/><small>23/06</small></th>
-                    <th>Tue<br/><small>24/06</small></th>
-                    <th>Wed<br/><small>25/06</small></th>
-                    <th>Thu<br/><small>26/06</small></th>
-                    <th>Fri<br/><small>27/06</small></th>
+                    <th className="shift-col">Ca làm việc</th>
+                    {weekDates.map((date, index) => (
+                      <th key={index}>
+                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][index]}<br/>
+                        <small>{formatDate(date)}</small>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {["Nguyễn văn A","Nguyễn văn A","Nguyễn văn A","Nguyễn văn A"].map((n,i)=>(
-                    <tr key={i}>
-                      <td className="staff-col">{n}</td>
-                      <td>6:00 - 14:00</td><td>6:00 - 14:00</td><td>6:00 - 14:00</td><td>6:00 - 14:00</td><td>6:00 - 14:00</td>
+                  {[1, 2, 3].map((shift, shiftIndex) => (
+                    <tr key={shiftIndex}>
+                      <td className="shift-col">
+                        Ca {shift}
+                      </td>
+                      {weekDates.map((_, dayIndex) => {
+                        const assignedStaff = getAssignedStaff(dayIndex, shiftIndex);
+                        
+                        return (
+                          <td key={dayIndex}>
+                            <select 
+                              className="staff-select"
+                              value={assignedStaff}
+                              onChange={(e) => handleShiftChange(dayIndex, shiftIndex, e.target.value)}
+                            >
+                              <option value="">-- Chưa giao --</option>
+                              {staffNames.map((name, index) => (
+                                <option key={index} value={name}>{name}</option>
+                              ))}
+                            </select>
+                          </td>
+                        );
+                      })}
                     </tr>
                   ))}
                 </tbody>
@@ -417,6 +607,515 @@ function SchedulingView(){
           </div>
         </div>
       )}
+    </>
+  );
+}
+*/
+
+
+function SchedulingView() {
+  const [open, setOpen] = useState(false);
+  const [storeName, setStore] = useState("");
+  const [currentWeek, setCurrentWeek] = useState(26);
+  const [currentYear, setCurrentYear] = useState(2025);
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 23));
+  const [staffData, setStaffData] = useState({});
+
+  const openModal = (name) => { 
+    setStore(name); 
+    setOpen(true); 
+  };
+
+  // Dữ liệu mẫu các cửa hàng
+  const STORES = [
+    { id: 1, name: "District 1 Store", working: "320 hours", late: 3, early: 2 },
+    { id: 2, name: "District 2 Store", working: "280 hours", late: 1, early: 4 },
+    { id: 3, name: "District 3 Store", working: "350 hours", late: 5, early: 1 },
+    { id: 4, name: "District 4 Store", working: "300 hours", late: 2, early: 3 }
+  ];
+
+  // Dữ liệu mẫu nhân viên
+  const STAFF_MEMBERS = {
+    1: ["Nguyen Van A", "Tran Thi B", "Le Van C", "Pham Thi D"],
+    2: ["Nguyen Van E", "Tran Thi F", "Le Van G"],
+    3: ["Nguyen Van H", "Tran Thi I", "Le Van K", "Pham Thi L", "Hoang Van M"],
+    4: ["Nguyen Van N", "Tran Thi O"]
+  };
+
+  // Tính toán ngày trong tuần (Monday to Sunday)
+  const getWeekDates = () => {
+    const startDate = new Date(currentDate);
+    // Set to Monday of the current week
+    const day = startDate.getDay();
+    const diff = startDate.getDate() - day + (day === 0 ? -6 : 1);
+    startDate.setDate(diff);
+    
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      days.push(date);
+    }
+    
+    return days;
+  };
+
+  // Định dạng ngày thành dd/mm
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}/${month}`;
+  };
+
+  // Thay đổi tuần
+  const changeWeek = (direction) => {
+    const newWeek = currentWeek + direction;
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + (direction * 7));
+    
+    let newYear = currentYear;
+    
+    if (newWeek > 52) {
+      setCurrentWeek(1);
+      newYear = currentYear + 1;
+      setCurrentYear(newYear);
+    } else if (newWeek < 1) {
+      setCurrentWeek(52);
+      newYear = currentYear - 1;
+      setCurrentYear(newYear);
+    } else {
+      setCurrentWeek(newWeek);
+    }
+    
+    setCurrentDate(newDate);
+  };
+
+  // Xử lý thay đổi ca làm việc
+  const handleShiftChange = (dayIndex, shiftIndex, staffName) => {
+    setStaffData(prev => {
+      const newData = {...prev};
+      const dayId = `day-${dayIndex}`;
+      const shiftId = `shift-${shiftIndex}`;
+      
+      if (!newData[dayId]) {
+        newData[dayId] = {};
+      }
+      
+      
+      // Gán nhân viên vào ca mới
+      if (staffName) {
+        newData[dayId][shiftId] = staffName;
+      } else {
+        delete newData[dayId][shiftId];
+      }
+      
+      return newData;
+    });
+  };
+
+  // Lấy nhân viên đã được giao cho ca cụ thể
+  const getAssignedStaff = (dayIndex, shiftIndex) => {
+    const dayId = `day-${dayIndex}`;
+    const shiftId = `shift-${shiftIndex}`;
+    return staffData[dayId]?.[shiftId] || '';
+  };
+
+  // Lưu dữ liệu
+  const saveData = () => {
+    alert('Data has been saved!');
+    console.log('Staff data:', staffData);
+  };
+
+  const weekDates = getWeekDates();
+  const storeId = STORES.find(store => store.name === storeName)?.id || 1;
+  const staffNames = STAFF_MEMBERS[storeId] || ["Nguyen Van A", "Nguyen Van B", "Nguyen Van C"];
+
+  return (
+    <>
+      <div className="panel">
+        <div className="store-list">
+          {STORES.map(s => (
+            <div key={s.id} className="store-card" onClick={() => openModal(s.name)}>
+              <div className="store-header">
+                <div className="store-icon">🏛</div>
+                <div className="store-name">{s.name}</div>
+                <div className="store-compare">0% vs last month</div>
+              </div>
+              <div className="store-details">
+                <div className="detail-item">
+                  <span className="label">Total working:</span>
+                  <span className="value">{s.working}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="label">Late Arrival:</span>
+                  <span className="value">{s.late}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="label">Early Leave:</span>
+                  <span className="value">{s.early}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {open && (
+        <div className="modal-overlay" onClick={(e) => { if (e.target.classList.contains('modal-overlay')) setOpen(false) }}>
+          <div className="modal-container">
+            <div className="modal-header">
+              <h2 className="modal-title">{storeName}</h2>
+              <button className="close-btn" onClick={() => setOpen(false)}>×</button>
+            </div>
+            <div className="modal-content">
+              <div className="schedule-toolbar">
+                <div className="week-navigator">
+                  <button className="nav-btn" onClick={() => changeWeek(-1)}>&lt;</button>
+                  <span className="week-display">Week {currentWeek} - {currentDate.getMonth() + 1}/{currentYear}</span>
+                  <button className="nav-btn" onClick={() => changeWeek(1)}>&gt;</button>
+                </div>
+                <button className="save-btn" onClick={saveData}>SAVE SCHEDULE</button>
+              </div>
+              
+              <div className="schedule-table-container">
+                <table className="schedule-table">
+                  <thead>
+                    <tr>
+                      <th className="shift-header">Shift</th>
+                      {weekDates.map((date, index) => (
+                        <th key={index} className="day-header">
+                          <div className="day-name">{['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}</div>
+                          <div className="day-date">{formatDate(date)}</div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[1, 2, 3].map((shift, shiftIndex) => (
+                      <tr key={shiftIndex} className="shift-row">
+                        <td className="shift-info">
+                          <div className="shift-title">Shift {shift}</div>
+                          <div className="shift-time">
+                            {shift === 1 ? '6am-12am' : shift === 2 ? '12am-6pm' : '6pm-12pm'}
+                          </div>
+                        </td>
+                        {weekDates.map((_, dayIndex) => {
+                          const assignedStaff = getAssignedStaff(dayIndex, shiftIndex);
+                          
+                          return (
+                            <td key={dayIndex} className="shift-cell">
+                              <select 
+                                className="staff-selector"
+                                value={assignedStaff}
+                                onChange={(e) => handleShiftChange(dayIndex, shiftIndex, e.target.value)}
+                              >
+                                <option value="">-- Select --</option>
+                                {staffNames.map((name, index) => (
+                                  <option key={index} value={name}>{name}</option>
+                                ))}
+                              </select>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .panel {
+          padding: 20px;
+          background-color: #f5f7fa;
+        }
+        
+        .store-list {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 20px;
+        }
+        
+        .store-card {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          padding: 20px;
+          cursor: pointer;
+          transition: transform 0.2s, box-shadow 0.2s;
+          border: 1px solid #e1e5eb;
+        }
+        
+        .store-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+        
+        .store-header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 15px;
+        }
+        
+        .store-icon {
+          font-size: 24px;
+          margin-right: 12px;
+        }
+        
+        .store-name {
+          font-weight: 600;
+          font-size: 18px;
+          color: #2c3e50;
+          flex: 1;
+        }
+        
+        .store-compare {
+          font-size: 14px;
+          color: #27ae60;
+          background-color: #e8f5e9;
+          padding: 4px 8px;
+          border-radius: 16px;
+        }
+        
+        .store-details {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        
+        .detail-item {
+          display: flex;
+          justify-content: space-between;
+          font-size: 14px;
+        }
+        
+        .label {
+          color: #7f8c8d;
+        }
+        
+        .value {
+          font-weight: 600;
+          color: #2c3e50;
+        }
+        
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 20px;
+        }
+        
+        .modal-container {
+          background: white;
+          border-radius: 12px;
+          width: 100%;
+          max-width: 1400px;
+          max-height: 90vh;
+          overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px 24px;
+          background: #3498db;
+          color: white;
+        }
+        
+        .modal-title {
+          margin: 0;
+          font-size: 20px;
+          font-weight: 600;
+        }
+        
+        .close-btn {
+          background: none;
+          border: none;
+          color: white;
+          font-size: 24px;
+          cursor: pointer;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          transition: background-color 0.2s;
+        }
+        
+        .close-btn:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-content {
+          padding: 24px;
+          max-height: calc(90vh - 80px);
+          overflow-y: auto;
+        }
+        
+        .schedule-toolbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 24px;
+          padding-bottom: 16px;
+          border-bottom: 1px solid #e1e5eb;
+        }
+        
+        .week-navigator {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        
+        .nav-btn {
+          background: #3498db;
+          color: white;
+          border: none;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-weight: bold;
+          transition: background-color 0.2s;
+        }
+        
+        .nav-btn:hover {
+          background: #2980b9;
+        }
+        
+        .week-display {
+          font-weight: 600;
+          color: #2c3e50;
+          font-size: 16px;
+        }
+        
+        .save-btn {
+          background: #27ae60;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 6px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+        
+        .save-btn:hover {
+          background: #219653;
+        }
+        
+        .schedule-table-container {
+          overflow-x: auto;
+          border-radius: 8px;
+          border: 1px solid #e1e5eb;
+        }
+        
+        .schedule-table {
+          width: 100%;
+          border-collapse: collapse;
+          background: white;
+        }
+        
+        .schedule-table th, .schedule-table td {
+          padding: 12px;
+          text-align: center;
+        }
+        
+        .shift-header, .day-header {
+          background: #f8f9fa;
+          font-weight: 600;
+          color: #2c3e50;
+        }
+        
+        .day-header {
+          min-width: 120px;
+        }
+        
+        .day-name {
+          font-size: 16px;
+          margin-bottom: 4px;
+        }
+        
+        .day-date {
+          font-size: 14px;
+          color: #7f8c8d;
+        }
+        
+        .shift-info {
+          background: #f8f9fa;
+          text-align: left;
+          min-width: 100px;
+        }
+        
+        .shift-title {
+          font-weight: 600;
+          color: #2c3e50;
+          margin-bottom: 4px;
+        }
+        
+        .shift-time {
+          font-size: 12px;
+          color: #7f8c8d;
+        }
+        
+        .shift-row {
+          border-bottom: 1px solid #e1e5eb;
+        }
+        
+        .shift-row:last-child {
+          border-bottom: none;
+        }
+        
+        .shift-cell {
+          background: white;
+        }
+        
+        .staff-selector {
+          width: 100%;
+          padding: 8px;
+          border: 1px solid #dce1e6;
+          border-radius: 6px;
+          background: white;
+          color: #2c3e50;
+          font-size: 14px;
+          cursor: pointer;
+          transition: border-color 0.2s;
+        }
+        
+        .staff-selector:focus {
+          outline: none;
+          border-color: #3498db;
+          box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+          .schedule-toolbar {
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+          }
+          
+          .store-list {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </>
   );
 }
