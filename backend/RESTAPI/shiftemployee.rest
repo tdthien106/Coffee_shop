@@ -1,0 +1,196 @@
+# File: shift-employee-api-test.rest
+# Base URL: http://localhost:3000/api/shift-employee
+
+### 1. GET ALL ASSIGNMENTS - Lấy tất cả phân công
+GET http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+### 2. GET ASSIGNMENT BY ID - Lấy phân công theo ID
+GET http://localhost:3000/api/shift-employee/1
+Content-Type: application/json
+
+### 3. GET ASSIGNMENTS BY SHIFT ID - Lấy phân công theo ca làm việc
+GET http://localhost:3000/api/shift-employee/shift/SH_20250825_C1
+Content-Type: application/json
+
+### 4. GET ASSIGNMENTS BY EMPLOYEE ID - Lấy phân công theo nhân viên
+GET http://localhost:3000/api/shift-employee/employee/S001
+Content-Type: application/json
+
+### 5. CREATE ASSIGNMENT - Tạo phân công mới (Success Case)
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250825_C1",
+  "employee_id": "S004"
+}
+
+### 6. CREATE ASSIGNMENT - Employee already assigned to same shift (Conflict)
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250825_C1",
+  "employee_id": "S001"
+}
+
+### 7. CREATE ASSIGNMENT - Employee assigned to overlapping shift (Time Conflict)
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250825_C2",
+  "employee_id": "S001"
+}
+
+### 8. CREATE ASSIGNMENT - Shift not found
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20259999_C1",
+  "employee_id": "S001"
+}
+
+### 9. CREATE ASSIGNMENT - Missing employee_id (Bad Request)
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250825_C1"
+}
+
+### 10. CREATE ASSIGNMENT - Missing shift_id (Bad Request)
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "employee_id": "S001"
+}
+
+### 11. CREATE ASSIGNMENT - Empty body (Bad Request)
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{}
+
+### 12. UPDATE ASSIGNMENT - Cập nhật phân công (Success)
+PUT http://localhost:3000/api/shift-employee/1
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250825_C2",
+  "employee_id": "S002"
+}
+
+### 13. UPDATE ASSIGNMENT - Assignment not found
+PUT http://localhost:3000/api/shift-employee/9999
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250825_C2",
+  "employee_id": "S002"
+}
+
+### 14. UPDATE ASSIGNMENT - Invalid data
+PUT http://localhost:3000/api/shift-employee/1
+Content-Type: application/json
+
+{
+  "invalid_field": "invalid_value"
+}
+
+### 15. DELETE ASSIGNMENT - Xóa phân công (Success)
+DELETE http://localhost:3000/api/shift-employee/1
+Content-Type: application/json
+
+### 16. DELETE ASSIGNMENT - Assignment not found
+DELETE http://localhost:3000/api/shift-employee/9999
+Content-Type: application/json
+
+### 17. GET ASSIGNMENT - Non-existent ID
+GET http://localhost:3000/api/shift-employee/9999
+Content-Type: application/json
+
+### 18. GET ASSIGNMENTS - Non-existent shift ID
+GET http://localhost:3000/api/shift-employee/shift/NON_EXISTENT_SHIFT
+Content-Type: application/json
+
+### 19. GET ASSIGNMENTS - Non-existent employee ID
+GET http://localhost:3000/api/shift-employee/employee/NON_EXISTENT_EMP
+Content-Type: application/json
+
+### 20. COMPLEX SCENARIO - Test employee availability across multiple shifts
+### First, assign employee to a shift
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250825_C1",
+  "employee_id": "S005"
+}
+
+### Then try to assign same employee to overlapping shift (should fail)
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250825_C2",
+  "employee_id": "S005"
+}
+
+### Then try to assign same employee to non-overlapping shift (should succeed)
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250826_C1",
+  "employee_id": "S005"
+}
+
+### 21. BULK OPERATIONS - Get multiple employee schedules
+GET http://localhost:3000/api/shift-employee/employee/S001
+Content-Type: application/json
+
+###
+GET http://localhost:3000/api/shift-employee/employee/S002
+Content-Type: application/json
+
+###
+GET http://localhost:3000/api/shift-employee/employee/S003
+Content-Type: application/json
+
+### 22. BULK OPERATIONS - Get multiple shift assignments
+GET http://localhost:3000/api/shift-employee/shift/SH_20250825_C1
+Content-Type: application/json
+
+###
+GET http://localhost:3000/api/shift-employee/shift/SH_20250825_C2
+Content-Type: application/json
+
+###
+GET http://localhost:3000/api/shift-employee/shift/SH_20250825_C3
+Content-Type: application/json
+
+### 23. EDGE CASE - Test with different date formats if needed
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250827_C1",
+  "employee_id": "S006"
+}
+
+### 24. EDGE CASE - Test with maximum employee ID length
+POST http://localhost:3000/api/shift-employee
+Content-Type: application/json
+
+{
+  "shift_id": "SH_20250827_C2",
+  "employee_id": "EMP_1234567890"
+}
+
+### 25. PERFORMANCE TEST - Get all assignments (check response time)
+GET http://localhost:3000/api/shift-employee
+Content-Type: application/json
