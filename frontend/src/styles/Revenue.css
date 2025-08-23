@@ -1,0 +1,413 @@
+/* CoffeeShopRevenue.css */
+.coffee-revenue-container {
+  max-width: 1200px;
+  margin: 5px auto;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.coffee-revenue-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.coffee-revenue-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.coffee-revenue-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.coffee-revenue-container::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+.coffee-revenue-header {
+  background: linear-gradient(120deg, #1d7de2 0%, #4a96e9 100%);
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content h1 {
+  font-size: 28px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.header-content h1 i {
+  margin-right: 15px;
+  font-size: 32px;
+}
+
+.header-content p {
+  opacity: 0.8;
+  margin: 0;
+}
+
+.time-selector {
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.time-selector button {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.time-selector button.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.time-selector button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.coffee-revenue-content {
+  padding: 30px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 4px solid #1d7de2;
+  text-align: center;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.metric-card:nth-child(2) {
+  border-top-color: #4a96e9;
+}
+
+.metric-card:nth-child(3) {
+  border-top-color: #7ab2ef;
+}
+
+.metric-card:nth-child(4) {
+  border-top-color: #a3cbf5;
+}
+
+.card-content h3 {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.card-content .value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.card-content .trend {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trend.positive {
+  color: #2ecc71;
+}
+
+.trend.negative {
+  color: #e74c3c;
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.main-chart {
+  grid-column: 1 / 3;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.chart-header h2 {
+  font-size: 18px;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 15px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.revenue-color {
+  background: #1d7de2;
+}
+
+.chart-container {
+  height: 250px;
+  position: relative;
+}
+
+.revenue-table {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.table-header h2 {
+  font-size: 18px;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.export-btn {
+  background: #1d7de2;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s ease;
+  font-size: 14px;
+}
+
+.export-btn:hover {
+  background: #1560bd;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+th {
+  color: #7f8c8d;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+td {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+tr:hover {
+  background-color: #f5f9ff;
+}
+
+.menu-item {
+  font-weight: 600;
+}
+
+.trend-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.positive {
+  color: #2ecc71;
+}
+
+.negative {
+  color: #e74c3c;
+}
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.coffee-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid #e6f0ff;
+  border-top: 3px solid #1d7de2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.metric-card,
+.chart-card,
+.revenue-table {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@media (max-width: 1250px) {
+  .coffee-revenue-container {
+    width: 95%;
+    margin: 10px auto;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts-container {
+    grid-template-columns: 1fr;
+  }
+
+  .main-chart {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .coffee-revenue-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .header-content h1 {
+    justify-content: center;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  text-align: center;
+  color: #e74c3c;
+}
+
+.error-message i {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.error-message h3 {
+  margin-bottom: 10px;
+  color: #e74c3c;
+}
+
+.retry-btn {
+  background: #1d7de2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.retry-btn:hover {
+  background: #1560bd;
+}

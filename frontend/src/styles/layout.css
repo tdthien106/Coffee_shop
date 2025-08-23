@@ -2,10 +2,11 @@
 .body {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);
-  gap: 16px;
+  gap: 5px;
   width: 100%;
   height: calc(100vh - 56px);
-  padding: 16px 24px;
+  padding: 0px 0px;
+  margin: 0px;
 }
 .content {
   min-width: 0;
