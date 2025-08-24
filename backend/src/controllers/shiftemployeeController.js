@@ -55,7 +55,7 @@ class ShiftEmployeeController {
     // POST create assignment
     async createAssignment(req, res) {
         try {
-            
+
             const newAssignment = await ShiftEmployeeModel.create(req.body);
             res.status(201).json({
                 success: true,
@@ -78,13 +78,12 @@ class ShiftEmployeeController {
     // PUT update assignment
     async updateAssignment(req, res) {
         try {
-            const updatedAssignment = await ShiftEmployeeModel.update(req.params.assignmentId, req.body);
-            if (!updatedAssignment) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Assignment not found'
-                });
-            }
+            const { shiftId, newEmployeeId } = req.body;
+            const updatedAssignment = await ShiftEmployeeModel.update({
+                shiftID: shiftId,
+                newEmployeeId
+            });
+
             res.json({
                 success: true,
                 data: updatedAssignment
@@ -97,28 +96,27 @@ class ShiftEmployeeController {
         }
     }
 
+
     // DELETE assignment
-    async deleteAssignment(req, res) {
+    async deleteAssignments(req, res) {
         try {
-            const deletedAssignment = await ShiftEmployeeModel.delete(req.params.assignmentId);
-            if (!deletedAssignment) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Assignment not found'
-                });
-            }
+            const { shiftId } = req.params;
+
+            const deleted = await ShiftEmployeeModel.delete({ shiftID: shiftId });
+
             res.json({
                 success: true,
-                data: deletedAssignment,
-                message: 'Assignment deleted successfully'
+                data: deleted
             });
         } catch (error) {
-            res.status(500).json({
+            res.status(404).json({
                 success: false,
                 message: error.message
             });
         }
     }
+
+
 }
 
 export default new ShiftEmployeeController();

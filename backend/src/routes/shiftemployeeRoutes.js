@@ -7,10 +7,9 @@ const router = express.Router();
 router.get('/', shiftEmployeeController.getAllAssignments);
 router.get('/shift/:shiftId', shiftEmployeeController.getAssignmentsByShiftId);
 router.get('/employee/:employeeId', shiftEmployeeController.getAssignmentsByEmployeeId);
-router.get('/:assignmentId', shiftEmployeeController.getAssignmentById);
 
-router.post('/', shiftEmployeeController.createAssignment);
-router.put('/:assignmentId', shiftEmployeeController.updateAssignment);
-router.delete('/:assignmentId', shiftEmployeeController.deleteAssignment);
+router.post('/create', shiftEmployeeController.createAssignment);
+router.put('/:shiftID', shiftEmployeeController.updateAssignment);
+router.delete('/delete/:ShiftID', shiftEmployeeController.deleteAssignments);
 
 export default router;

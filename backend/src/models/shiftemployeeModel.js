@@ -1,11 +1,12 @@
 import pool from "../config/db.js";
+import ShiftModel from "./shiftModel.js";
 
 class ShiftEmployeeModel {
     static async getAll() {
         try {
             const { rows } = await pool.query(`
                 SELECT se.*, s.start_time, s.end_time 
-                FROM shift_employees se 
+                FROM shift_employee se 
                 JOIN shifts s ON se.shift_id = s.shift_id 
                 ORDER BY s.start_time
             `);
@@ -20,7 +21,7 @@ class ShiftEmployeeModel {
         try {
             const { rows } = await pool.query(`
                 SELECT se.*, s.start_time, s.end_time 
-                FROM shift_employees se 
+                FROM shift_employee se 
                 JOIN shifts s ON se.shift_id = s.shift_id 
                 WHERE se.shift_id = $1
             `, [shiftId]);
@@ -35,7 +36,7 @@ class ShiftEmployeeModel {
         try {
             const { rows } = await pool.query(`
                 SELECT se.*, s.start_time, s.end_time 
-                FROM shift_employees se 
+                FROM shift_employee se 
                 JOIN shifts s ON se.shift_id = s.shift_id 
                 WHERE se.employee_id = $1
                 ORDER BY s.start_time
@@ -47,52 +48,63 @@ class ShiftEmployeeModel {
         }
     }
 
-    static async create(assignmentData) {
-        const { shift_id, employee_id, role, notes } = assignmentData;
-        
-        try {
-            const { rows } = await pool.query(`
-                INSERT INTO shift_employees (shift_id, employee_id, role, notes) 
-                VALUES ($1, $2, $3, $4) 
-                RETURNING *
-            `, [shift_id, employee_id, role, notes || null]);
-            return rows[0];
-        } catch (error) {
-            console.error('ShiftEmployeeModel.create error:', error);
-            throw new Error('Failed to create shift assignment');
+    static async create({ date, ca, employeeId }) {
+        // 1. Tạo shift nếu chưa có
+        const shift = await ShiftModel.createShift({ date, ca });
+
+        // 2. Gán nhân viên vào shift
+        const query = `
+            INSERT INTO shift_employee (shift_id, employee_id)
+            VALUES ($1, $2)
+            ON CONFLICT DO NOTHING
+            RETURNING shift_id AS "shiftID", employee_id AS "employeeID";
+        `;
+
+        const { rows } = await pool.query(query, [shift.shiftID, employeeId]);
+        // Nếu đã tồn tại thì rows = []
+        if (rows.length === 0) {
+            return { shiftID: shift.shiftID, employeeID: employeeId, message: "Đã tồn tại" };
         }
+        return rows[0];
     }
 
-    static async update(assignmentId, assignmentData) {
-        const { role, notes } = assignmentData;
-        
-        try {
-            const { rows } = await pool.query(`
-                UPDATE shift_employees 
-                SET role = $1, notes = $2 
-                WHERE assignment_id = $3 
-                RETURNING *
-            `, [role, notes || null, assignmentId]);
-            return rows[0] || null;
-        } catch (error) {
-            console.error('ShiftEmployeeModel.update error:', error);
-            throw new Error('Failed to update shift assignment');
+
+    static async update( shiftID, newEmployeeId ) {
+        const query = `
+            UPDATE shift_employee
+            SET employee_id = $2
+            WHERE shift_id = $1
+            RETURNING shift_id AS "shiftID", employee_id AS "employeeID";
+        `;
+
+        const { rows } = await pool.query(query, [shiftID, newEmployeeId]);
+
+        if (rows.length === 0) {
+            throw new Error("Không tìm thấy shiftID để update");
         }
+
+        return rows[0];
     }
 
-    static async delete(assignmentId) {
-        try {
-            const { rows } = await pool.query(`
-                DELETE FROM shift_employees 
-                WHERE assignment_id = $1 
-                RETURNING *
-            `, [assignmentId]);
-            return rows[0] || null;
-        } catch (error) {
-            console.error('ShiftEmployeeModel.delete error:', error);
-            throw new Error('Failed to delete shift assignment');
+
+
+    static async delete(shiftID) {
+        const query = `
+            DELETE FROM shift_employee
+            WHERE shift_id = $1
+            RETURNING shift_id AS "shiftID", employee_id AS "employeeID";
+        `;
+
+        const { rows } = await pool.query(query, [shiftID]);
+
+        if (rows.length === 0) {
+            throw new Error(`Không tìm thấy shiftID ${shiftID} để xóa`);
         }
+
+        return rows[0];
     }
+
+
 
 
 }

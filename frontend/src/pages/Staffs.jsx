@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 const API = "http://localhost:3000/api";
 
 const STORES = [
-  { id:'s1', name:'HCMUS - 227 Nguyễn Văn Cừ', working:200, late:0, early:0 },
-  { id:'s2', name:'HCMUS - 227 Nguyễn Văn Cừ', working:200, late:0, early:0 },
-  { id:'s3', name:'HCMUS - 227 Nguyễn Văn Cừ', working:200, late:0, early:0 },
+  { id: 's1', name: 'HCMUS - 227 Nguyễn Văn Cừ', working: 200, late: 0, early: 0 },
+  { id: 's2', name: 'HCMUS - 227 Nguyễn Văn Cừ', working: 200, late: 0, early: 0 },
+  { id: 's3', name: 'HCMUS - 227 Nguyễn Văn Cừ', working: 200, late: 0, early: 0 },
 ];
 
 
@@ -14,16 +14,16 @@ export default function Staffs() {
   return (
     <section className="card">
       <div className="tabs">
-        {["Find","Add","Salary","Scheduling"].map(t=>(
-          <button key={t} className={"tab"+(tab===t?" active":"")} onClick={()=>setTab(t)}>
-            {t==="Find"?"Find staff":t==="Add"?"Add staff":t}
+        {["Find", "Add", "Salary", "Scheduling"].map(t => (
+          <button key={t} className={"tab" + (tab === t ? " active" : "")} onClick={() => setTab(t)}>
+            {t === "Find" ? "Find staff" : t === "Add" ? "Add staff" : t}
           </button>
         ))}
       </div>
-      {tab==="Find" && <FindStaff />}
-      {tab==="Add" && <AddStaff />}
-      {tab==="Salary" && <SalaryView />}
-      {tab==="Scheduling" && <SchedulingView />}
+      {tab === "Find" && <FindStaff />}
+      {tab === "Add" && <AddStaff />}
+      {tab === "Salary" && <SalaryView />}
+      {tab === "Scheduling" && <SchedulingView />}
     </section>
   );
 }
@@ -39,7 +39,7 @@ function Field({ label, children }) {
 }
 
 
-function FindStaff(){
+function FindStaff() {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [editable, setEditable] = useState(false);
@@ -182,40 +182,40 @@ function FindStaff(){
     setLoading(false);
   };
 
-const onDelete = async () => {
-  if (!employeeId) return;
-  if (!window.confirm("Bạn có chắc muốn xóa nhân viên này?")) return;
-  setLoading(true);
-  setErr("");
-  try {
-    await fetch(`${API}/employees/${employeeId}`, {
-      method: "DELETE",
-    });
-    alert("Đã xóa nhân viên!");
-    setForm(null);
-    setSearch("");
-  } catch (e) {
-    setErr("Xóa thất bại: " + e.message);
-  }
-  setLoading(false);
-};
+  const onDelete = async () => {
+    if (!employeeId) return;
+    if (!window.confirm("Bạn có chắc muốn xóa nhân viên này?")) return;
+    setLoading(true);
+    setErr("");
+    try {
+      await fetch(`${API}/employees/${employeeId}`, {
+        method: "DELETE",
+      });
+      alert("Đã xóa nhân viên!");
+      setForm(null);
+      setSearch("");
+    } catch (e) {
+      setErr("Xóa thất bại: " + e.message);
+    }
+    setLoading(false);
+  };
 
   return (
     <div className="panel">
-    <div className="search">
-      <input
-        className="input"
-        placeholder="Nhập mã nhân viên (VD: S001)"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        onKeyDown={e => { if (e.key === "Enter") onSearch(); }}
-      />
-      <button className="btn" onClick={onSearch} disabled={loading}>Tìm kiếm</button>
-    </div>
+      <div className="search">
+        <input
+          className="input"
+          placeholder="Nhập mã nhân viên (VD: S001)"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter") onSearch(); }}
+        />
+        <button className="btn" onClick={onSearch} disabled={loading}>Tìm kiếm</button>
+      </div>
 
-      {loading && <div style={{marginTop:16, color:'#888'}}>Đang tải...</div>}
-      {err && <div style={{marginTop:16, color:'red'}}>{err}</div>}
-    {/* Danh sách nhân viên */}
+      {loading && <div style={{ marginTop: 16, color: '#888' }}>Đang tải...</div>}
+      {err && <div style={{ marginTop: 16, color: 'red' }}>{err}</div>}
+      {/* Danh sách nhân viên */}
       <div className="staff-list">
         <h3>Danh sách nhân viên</h3>
         <ul>
@@ -243,7 +243,7 @@ const onDelete = async () => {
           </div>
           <div className="actions">
             {!editable
-              ? <button className="btn outline" onClick={()=>setEditable(true)}>Edit</button>
+              ? <button className="btn outline" onClick={() => setEditable(true)}>Edit</button>
               : <button className="btn primary" onClick={onSave} disabled={loading}>Save</button>}
             <button className="btn danger" onClick={onDelete} disabled={loading}>Delete</button>
           </div>
@@ -266,7 +266,7 @@ async function getNextUserId() {
   return nextId;
 }
 
-function AddStaff(){
+function AddStaff() {
   const [form, setForm] = useState({
     employeeCode: "",
     fullName: "",
@@ -294,7 +294,7 @@ function AddStaff(){
     setLoading(true);
     setErr("");
     setSuccess("");
-    
+
     try {
       //Lấy thông tin để kiểm tra trùng lặp
       const userRes1 = await fetch(`${API}/users`);
@@ -348,8 +348,8 @@ function AddStaff(){
 
       setSuccess("Thêm nhân viên thành công!");
       setForm({
-        employeeCode:"", fullName:"", dob:"", gender:"", phone:"",
-        username:"", password:""
+        employeeCode: "", fullName: "", dob: "", gender: "", phone: "",
+        username: "", password: ""
       });
     } catch (e) {
       setErr(e.message);
@@ -371,17 +371,17 @@ function AddStaff(){
 
       <div className="actions">
         <button className="btn primary" disabled={!canSubmit || loading} onClick={onAdd}>Add</button>
-        {!canSubmit && <small style={{marginLeft:8,color:'#888'}}>(Cần nhập đủ thông tin)</small>}
-        {loading && <span style={{marginLeft:8,color:'#888'}}>Đang thêm...</span>}
-        {err && <div style={{color:'red',marginTop:8}}>{err}</div>}
-        {success && <div style={{color:'green',marginTop:8}}>{success}</div>}
+        {!canSubmit && <small style={{ marginLeft: 8, color: '#888' }}>(Cần nhập đủ thông tin)</small>}
+        {loading && <span style={{ marginLeft: 8, color: '#888' }}>Đang thêm...</span>}
+        {err && <div style={{ color: 'red', marginTop: 8 }}>{err}</div>}
+        {success && <div style={{ color: 'green', marginTop: 8 }}>{success}</div>}
       </div>
     </div>
   );
 }
 
 /* ---------- Salary ---------- */
-function SalaryView(){
+function SalaryView() {
   return (
     <div className="panel">
       <div className="summary">
@@ -390,7 +390,7 @@ function SalaryView(){
         <div className="sum-box"><div>Early Leave</div><b>0</b></div>
       </div>
       <div className="store-list">
-        {STORES.map(s=>(
+        {STORES.map(s => (
           <div key={s.id} className="store">
             <div className="row">
               <div className="badge">🏛</div>
@@ -409,237 +409,119 @@ function SalaryView(){
   );
 }
 
-/* ---------- Scheduling + modal ---------- */
-/*function SchedulingView() {
-  const [open, setOpen] = useState(false);
-  const [storeName, setStore] = useState("");
-  const [currentWeek, setCurrentWeek] = useState(26);
-  const [currentYear, setCurrentYear] = useState(2025);
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 23));
-  const [staffData, setStaffData] = useState({});
-  const [selectedStaff, setSelectedStaff] = useState(null);
 
-  const openModal = (name) => { 
-    setStore(name); 
-    setOpen(true); 
-  };
-
-  // Dữ liệu mẫu các cửa hàng
-  const STORES = [
-    { id: 1, name: "Cửa Hàng Quận 1", working: "320 giờ", late: 3, early: 2 },
-    { id: 2, name: "Cửa Hàng Quận 2", working: "280 giờ", late: 1, early: 4 },
-    { id: 3, name: "Cửa Hàng Quận 3", working: "350 giờ", late: 5, early: 1 },
-    { id: 4, name: "Cửa Hàng Quận 4", working: "300 giờ", late: 2, early: 3 }
-  ];
-
-  // Dữ liệu mẫu nhân viên
-  const STAFF_MEMBERS = {
-    1: ["Nguyễn Văn A", "Trần Thị B", "Lê Văn C", "Phạm Thị D"],
-    2: ["Nguyễn Văn E", "Trần Thị F", "Lê Văn G"],
-    3: ["Nguyễn Văn H", "Trần Thị I", "Lê Văn K", "Phạm Thị L", "Hoàng Văn M"],
-    4: ["Nguyễn Văn N", "Trần Thị O"]
-  };
-
-  // Tính toán ngày trong tuần
-  const getWeekDates = () => {
-    const startDate = new Date(currentDate);
-    startDate.setDate(currentDate.getDate() - currentDate.getDay() + 1); // Thứ 2
-    
-    const days = [];
-    for (let i = 0; i < 5; i++) {
-      const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
-      days.push(date);
-    }
-    
-    return days;
-  };
-
-  // Định dạng ngày thành dd/mm
-  const formatDate = (date) => {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    return `${day}/${month}`;
-  };
-
-  // Thay đổi tuần
-  const changeWeek = (direction) => {
-    const newWeek = currentWeek + direction;
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() + (direction * 7));
-    
-    let newYear = currentYear;
-    
-    if (newWeek > 52) {
-      setCurrentWeek(1);
-      newYear = currentYear + 1;
-      setCurrentYear(newYear);
-    } else if (newWeek < 1) {
-      setCurrentWeek(52);
-      newYear = currentYear - 1;
-      setCurrentYear(newYear);
-    } else {
-      setCurrentWeek(newWeek);
-    }
-    
-    setCurrentDate(newDate);
-  };
-
-  // Xử lý thay đổi ca làm việc
-  const handleShiftChange = (dayIndex, shiftIndex, staffName) => {
-    setStaffData(prev => {
-      const newData = {...prev};
-      const dayId = `day-${dayIndex}`;
-      const shiftId = `shift-${shiftIndex}`;
-      
-      if (!newData[dayId]) {
-        newData[dayId] = {};
-      }
-      
-      // Gán nhân viên vào ca mới
-      if (staffName) {
-        newData[dayId][shiftId] = staffName;
-      } else {
-        delete newData[dayId][shiftId];
-      }
-      
-      return newData;
-    });
-  };
-
-  // Lấy nhân viên đã được giao cho ca cụ thể
-  const getAssignedStaff = (dayIndex, shiftIndex) => {
-    const dayId = `day-${dayIndex}`;
-    const shiftId = `shift-${shiftIndex}`;
-    return staffData[dayId]?.[shiftId] || '';
-  };
-
-  // Lưu dữ liệu
-  const saveData = () => {
-    alert('Dữ liệu đã được lưu!');
-    console.log('Dữ liệu nhân viên:', staffData);
-    // Ở đây bạn có thể thêm code để gửi dữ liệu đến server
-  };
-
-  const weekDates = getWeekDates();
-  const storeId = STORES.find(store => store.name === storeName)?.id || 1;
-  const staffNames = STAFF_MEMBERS[storeId] || ["Nguyễn Văn A", "Nguyễn Văn B", "Nguyễn Văn C"];
-
-  return (
-    <>
-      <div className="panel">
-        <div className="store-list">
-          {STORES.map(s => (
-            <div key={s.id} className="store clickable" onClick={() => openModal(s.name)}>
-              <div className="row">
-                <div className="badge">🏛</div>
-                <div className="name">{s.name}</div>
-                <div className="pct">0% with last month</div>
-              </div>
-              <div className="meta">
-                <div>Total working hour: <b>{s.working}</b></div>
-                <div>Late Arrival: <b>{s.late}</b></div>
-                <div>Early Leave: <b>{s.early}</b></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {open && (
-        <div className="modal" onClick={(e) => { if (e.target.classList.contains('modal')) setOpen(false) }}>
-          <div className="modal-card">
-            <div className="modal-head">
-              <div>{storeName}</div>
-              <button className="close" onClick={() => setOpen(false)}>X</button>
-            </div>
-            <div className="modal-body">
-              <div className="toolbar">
-                <div className="week-navigation">
-                  <button onClick={() => changeWeek(-1)}>&lt;</button>
-                  <span className="week">Week {currentWeek} – {currentDate.getMonth() + 1}/{currentYear}</span>
-                  <button onClick={() => changeWeek(1)}>&gt;</button>
-                </div>
-                <button className="btn save" onClick={saveData}>SAVE</button>
-              </div>
-              
-              <table className="tbl">
-                <thead>
-                  <tr>
-                    <th className="shift-col">Ca làm việc</th>
-                    {weekDates.map((date, index) => (
-                      <th key={index}>
-                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][index]}<br/>
-                        <small>{formatDate(date)}</small>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {[1, 2, 3].map((shift, shiftIndex) => (
-                    <tr key={shiftIndex}>
-                      <td className="shift-col">
-                        Ca {shift}
-                      </td>
-                      {weekDates.map((_, dayIndex) => {
-                        const assignedStaff = getAssignedStaff(dayIndex, shiftIndex);
-                        
-                        return (
-                          <td key={dayIndex}>
-                            <select 
-                              className="staff-select"
-                              value={assignedStaff}
-                              onChange={(e) => handleShiftChange(dayIndex, shiftIndex, e.target.value)}
-                            >
-                              <option value="">-- Chưa giao --</option>
-                              {staffNames.map((name, index) => (
-                                <option key={index} value={name}>{name}</option>
-                              ))}
-                            </select>
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-*/
-
+/* ---------- Scheduling ---------- */
+let globalAssignments = [];
+let globalEmployees = [];
+let globalUsers = [];
 
 function SchedulingView() {
   const [open, setOpen] = useState(false);
   const [storeName, setStore] = useState("");
-  const [currentWeek, setCurrentWeek] = useState(26);
-  const [currentYear, setCurrentYear] = useState(2025);
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 23));
-  const [staffData, setStaffData] = useState({});
+  const [currentWeek, setCurrentWeek] = useState(getCurrentWeekNumber());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentDate, setCurrentDate] = useState(getMondayOfCurrentWeek());
 
-  const openModal = (name) => { 
-    setStore(name); 
-    setOpen(true); 
+  const [employees, setEmployees] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [assignments, setAssignments] = useState([]);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Hàm lấy thứ Hai của tuần hiện tại
+  function getMondayOfCurrentWeek() {
+    const today = new Date();
+    const day = today.getDay();
+    const diff = today.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
+    return new Date(today.setDate(diff));
+  }
+
+  // Hàm lấy số tuần hiện tại
+  function getCurrentWeekNumber() {
+    const today = new Date();
+    const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+    const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+  }
+
+  // Hàm lấy thông tin đầy đủ của nhân viên
+  const getEmployeeInfo = (employeeId) => {
+    if (!employeeId) return null;
+
+    const employee = employees.find(emp => emp.employee_id === employeeId);
+    if (!employee) return null;
+
+    const user = users.find(user => user.user_id === employee.user_id);
+    if (!user) return null;
+
+    return {
+      employee_id: employee.employee_id,
+      user_id: employee.user_id,
+      name: user.name,
+      position: employee.position,
+    };
   };
 
-  // Dữ liệu mẫu các cửa hàng
-  const STORES = [
-    { id: 1, name: "District 1 Store", working: "320 hours", late: 3, early: 2 },
-    { id: 2, name: "District 2 Store", working: "280 hours", late: 1, early: 4 },
-    { id: 3, name: "District 3 Store", working: "350 hours", late: 5, early: 1 },
-    { id: 4, name: "District 4 Store", working: "300 hours", late: 2, early: 3 }
-  ];
 
-  // Dữ liệu mẫu nhân viên
-  const STAFF_MEMBERS = {
-    1: ["Nguyen Van A", "Tran Thi B", "Le Van C", "Pham Thi D"],
-    2: ["Nguyen Van E", "Tran Thi F", "Le Van G"],
-    3: ["Nguyen Van H", "Tran Thi I", "Le Van K", "Pham Thi L", "Hoang Van M"],
-    4: ["Nguyen Van N", "Tran Thi O"]
+  // Hàm lấy tên nhân viên
+  const getEmployeeName = (employeeId) => {
+    const employeeInfo = getEmployeeInfo(employeeId);
+    return employeeInfo ? employeeInfo.name : "Unknown";
+  };
+
+  const openModal = async (name) => {
+    setStore(name);
+    setOpen(true);
+
+    if (globalAssignments.length > 0) {
+      setAssignments(globalAssignments);
+    }
+
+    else {
+
+      // Lấy tất cả các phân công ca và chuẩn hóa dữ liệu
+      const assignmentsResponse = await fetch(`${API}/shift-employees`);
+      const assignmentsData = await assignmentsResponse.json();
+      const assignmentsList = assignmentsData.data || assignmentsData || [];
+
+      // Chuẩn hóa dữ liệu để có cùng định dạng
+      const normalizedAssignments = assignmentsList.map(item => ({
+        shiftID: item.shift_id || item.shiftID || item.shiftId,
+        employeeId: item.employee_id || item.employeeId
+      }));
+
+      setAssignments(normalizedAssignments);
+      globalAssignments = normalizedAssignments;
+    }
+
+    setLoading(true);
+    try {
+
+      setCurrentWeek(getCurrentWeekNumber());
+      setCurrentYear(new Date().getFullYear());
+      setCurrentDate(getMondayOfCurrentWeek());
+
+      // Lấy tất cả nhân viên
+      const employeesResponse = await fetch(`${API}/employees`);
+      const employeesData = await employeesResponse.json();
+      const employeesList = employeesData.data || employeesData || [];
+      setEmployees(employeesList);
+      globalEmployees = employeesList;
+
+      // Lấy tất cả người dùng
+      const usersResponse = await fetch(`${API}/users`);
+      const usersData = await usersResponse.json();
+      const usersList = usersData.data || usersData || [];
+      setUsers(usersList);
+      globalUsers = usersList;
+
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      alert('Failed to load data. Please check console for details.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Tính toán ngày trong tuần (Monday to Sunday)
@@ -649,15 +531,23 @@ function SchedulingView() {
     const day = startDate.getDay();
     const diff = startDate.getDate() - day + (day === 0 ? -6 : 1);
     startDate.setDate(diff);
-    
+
     const days = [];
     for (let i = 0; i < 7; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
       days.push(date);
     }
-    
+
     return days;
+  };
+
+  // Định dạng ngày thành yyyymmdd để sử dụng với API (định dạng trong shiftID)
+  const formatDateForShiftID = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}${month}${day}`;
   };
 
   // Định dạng ngày thành dd/mm
@@ -669,66 +559,86 @@ function SchedulingView() {
 
   // Thay đổi tuần
   const changeWeek = (direction) => {
-    const newWeek = currentWeek + direction;
     const newDate = new Date(currentDate);
     newDate.setDate(currentDate.getDate() + (direction * 7));
-    
-    let newYear = currentYear;
-    
-    if (newWeek > 52) {
-      setCurrentWeek(1);
-      newYear = currentYear + 1;
-      setCurrentYear(newYear);
-    } else if (newWeek < 1) {
-      setCurrentWeek(52);
-      newYear = currentYear - 1;
-      setCurrentYear(newYear);
-    } else {
-      setCurrentWeek(newWeek);
-    }
-    
+
+    // Tính toán tuần mới và năm mới
+    const startOfYear = new Date(newDate.getFullYear(), 0, 1);
+    const days = Math.floor((newDate - startOfYear) / (24 * 60 * 60 * 1000));
+    const newWeek = Math.ceil((days + 1) / 7);
+
     setCurrentDate(newDate);
+    setCurrentWeek(newWeek);
+    setCurrentYear(newDate.getFullYear());
   };
 
-  // Xử lý thay đổi ca làm việc
-  const handleShiftChange = (dayIndex, shiftIndex, staffName) => {
-    setStaffData(prev => {
-      const newData = {...prev};
-      const dayId = `day-${dayIndex}`;
-      const shiftId = `shift-${shiftIndex}`;
-      
-      if (!newData[dayId]) {
-        newData[dayId] = {};
-      }
-      
-      
-      // Gán nhân viên vào ca mới
-      if (staffName) {
-        newData[dayId][shiftId] = staffName;
+  // Lấy shiftID dựa trên ngày và ca (không dựa vào cửa hàng)
+  const getShiftID = (date, shiftNumber) => {
+    const dateStr = formatDateForShiftID(date);
+    const ca = shiftNumber + 1; // shiftNumber là 0,1,2 -> ca là 1,2,3
+    return `SH_${dateStr}_C${ca}`;
+  };
+
+  // Lấy nhân viên đã được giao cho ca cụ thể từ state assignments
+  const getAssignedEmployee = (date, shiftNumber) => {
+    const shiftID = getShiftID(date, shiftNumber);
+    const assignment = assignments.find(a => a.shiftID === shiftID);
+    return assignment ? assignment.employeeId : '';
+  };
+
+  // Xử lý thay đổi ca làm việc - chỉ cập nhật state cục bộ
+  const handleShiftChange = (date, shiftNumber, employeeId) => {
+    const shiftID = getShiftID(date, shiftNumber);
+
+    // Tìm assignment hiện tại
+    const existingAssignmentIndex = assignments.findIndex(a => a.shiftID === shiftID);
+    let updatedAssignments = [...assignments];
+
+    if (employeeId) {
+      if (existingAssignmentIndex !== -1) {
+        // Cập nhật assignment hiện có
+        updatedAssignments[existingAssignmentIndex] = {
+          ...updatedAssignments[existingAssignmentIndex],
+          employeeId: employeeId
+        };
       } else {
-        delete newData[dayId][shiftId];
+        // Tạo assignment mới
+        const newAssignment = {
+          shiftID: shiftID,
+          employeeId: employeeId,
+          date: formatDateForShiftID(date),
+          ca: `C${shiftNumber + 1}`
+        };
+        updatedAssignments.push(newAssignment);
       }
-      
-      return newData;
-    });
+    } else if (existingAssignmentIndex !== -1) {
+      // Xóa assignment nếu không chọn nhân viên nào
+      updatedAssignments.splice(existingAssignmentIndex, 1);
+    }
+
+    setAssignments(updatedAssignments);
+    globalAssignments = updatedAssignments; // Cập nhật biến toàn cục
+    setHasChanges(true);
   };
 
-  // Lấy nhân viên đã được giao cho ca cụ thể
-  const getAssignedStaff = (dayIndex, shiftIndex) => {
-    const dayId = `day-${dayIndex}`;
-    const shiftId = `shift-${shiftIndex}`;
-    return staffData[dayId]?.[shiftId] || '';
+  // Hàm lưu tất cả thay đổi (chỉ trong bộ nhớ)
+  const saveAllChanges = () => {
+    setHasChanges(false);
+    alert('All changes have been saved locally!');
   };
 
-  // Lưu dữ liệu
-  const saveData = () => {
-    alert('Data has been saved!');
-    console.log('Staff data:', staffData);
+  // Hàm đóng modal với cảnh báo nếu có thay đổi chưa lưu
+  const closeModal = () => {
+    if (hasChanges) {
+      const confirmClose = window.confirm(
+        'You have unsaved changes. Are you sure you want to close without saving?'
+      );
+      if (!confirmClose) return;
+    }
+    setOpen(false);
   };
 
   const weekDates = getWeekDates();
-  const storeId = STORES.find(store => store.name === storeName)?.id || 1;
-  const staffNames = STAFF_MEMBERS[storeId] || ["Nguyen Van A", "Nguyen Van B", "Nguyen Van C"];
 
   return (
     <>
@@ -761,67 +671,88 @@ function SchedulingView() {
       </div>
 
       {open && (
-        <div className="modal-overlay" onClick={(e) => { if (e.target.classList.contains('modal-overlay')) setOpen(false) }}>
+        <div className="modal-overlay" onClick={(e) => { if (e.target.classList.contains('modal-overlay')) closeModal() }}>
           <div className="modal-container">
             <div className="modal-header">
               <h2 className="modal-title">{storeName}</h2>
-              <button className="close-btn" onClick={() => setOpen(false)}>×</button>
+              <button className="close-btn" onClick={closeModal}>×</button>
             </div>
             <div className="modal-content">
-              <div className="schedule-toolbar">
-                <div className="week-navigator">
-                  <button className="nav-btn" onClick={() => changeWeek(-1)}>&lt;</button>
-                  <span className="week-display">Week {currentWeek} - {currentDate.getMonth() + 1}/{currentYear}</span>
-                  <button className="nav-btn" onClick={() => changeWeek(1)}>&gt;</button>
-                </div>
-                <button className="save-btn" onClick={saveData}>SAVE SCHEDULE</button>
-              </div>
-              
-              <div className="schedule-table-container">
-                <table className="schedule-table">
-                  <thead>
-                    <tr>
-                      <th className="shift-header">Shift</th>
-                      {weekDates.map((date, index) => (
-                        <th key={index} className="day-header">
-                          <div className="day-name">{['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}</div>
-                          <div className="day-date">{formatDate(date)}</div>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[1, 2, 3].map((shift, shiftIndex) => (
-                      <tr key={shiftIndex} className="shift-row">
-                        <td className="shift-info">
-                          <div className="shift-title">Shift {shift}</div>
-                          <div className="shift-time">
-                            {shift === 1 ? '6am-12am' : shift === 2 ? '12am-6pm' : '6pm-12pm'}
-                          </div>
-                        </td>
-                        {weekDates.map((_, dayIndex) => {
-                          const assignedStaff = getAssignedStaff(dayIndex, shiftIndex);
-                          
-                          return (
-                            <td key={dayIndex} className="shift-cell">
-                              <select 
-                                className="staff-selector"
-                                value={assignedStaff}
-                                onChange={(e) => handleShiftChange(dayIndex, shiftIndex, e.target.value)}
-                              >
-                                <option value="">-- Select --</option>
-                                {staffNames.map((name, index) => (
-                                  <option key={index} value={name}>{name}</option>
-                                ))}
-                              </select>
+              {loading ? (
+                <div className="loading">Loading data...</div>
+              ) : (
+                <>
+                  <div className="schedule-toolbar">
+                    <div className="week-navigator">
+                      <button className="nav-btn" onClick={() => changeWeek(-1)}>&lt;</button>
+                      <span className="week-display">Week {currentWeek} - {currentYear}</span>
+                      <button className="nav-btn" onClick={() => changeWeek(1)}>&gt;</button>
+                    </div>
+
+                    {hasChanges && (
+                      <div className="save-container">
+                        <button className="save-btn" onClick={saveAllChanges}>
+                          Save Change
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+
+                  <div className="schedule-table-container">
+                    <table className="schedule-table">
+                      <thead>
+                        <tr>
+                          <th className="shift-header">Shift</th>
+                          {weekDates.map((date, index) => (
+                            <th key={index} className="day-header">
+                              <div className="day-name">{['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}</div>
+                              <div className="day-date">{formatDate(date)}</div>
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[1, 2, 3].map((shift, shiftIndex) => (
+                          <tr key={shiftIndex} className="shift-row">
+                            <td className="shift-info">
+                              <div className="shift-title">Shift {shift}</div>
+                              <div className="shift-time">
+                                {shift === 1 ? '6am-12pm' : shift === 2 ? '12pm-6pm' : '6pm-12am'}
+                              </div>
                             </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                            {weekDates.map((date, dayIndex) => {
+                              const assignedEmployeeId = getAssignedEmployee(date, shiftIndex);
+                              const employeeInfo = getEmployeeInfo(assignedEmployeeId);
+
+                              return (
+                                <td key={dayIndex} className="shift-cell">
+                                  <select
+                                    className="staff-selector"
+                                    value={assignedEmployeeId || ""}
+                                    onChange={(e) => handleShiftChange(date, shiftIndex, e.target.value)}
+                                  >
+                                    <option value="">-- Select --</option>
+                                    {employees.map((employee) => (
+                                      <option key={employee.employee_id} value={employee.employee_id}>
+                                        {getEmployeeName(employee.employee_id)}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  {employeeInfo && (
+                                    <div className="employee-info">
+                                    </div>
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -909,12 +840,12 @@ function SchedulingView() {
           bottom: 0;
           background-color: rgba(0, 0, 0, 0.5);
           display: flex;
-          align-items: center;
-          justify-content: center;
+          align-items: center;   /* căn giữa theo chiều dọc */
+          justify-content: center; /* căn giữa theo chiều ngang */
           z-index: 1000;
           padding: 20px;
         }
-        
+
         .modal-container {
           background: white;
           border-radius: 12px;
@@ -923,6 +854,7 @@ function SchedulingView() {
           max-height: 90vh;
           overflow: hidden;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          margin: auto; /* đảm bảo modal luôn ở giữa */
         }
         
         .modal-header {
