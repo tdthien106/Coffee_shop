@@ -107,26 +107,6 @@ const Home = () => {
       <header className="dashboard-header">
         <div className="header-left">
           <h1>{dashboardData.storeInfo.name} Dashboard</h1>
-          <div className="time-range-selector">
-            <button
-              className={timeRange === "today" ? "active" : ""}
-              onClick={() => setTimeRange("today")}
-            >
-              Today
-            </button>
-            <button
-              className={timeRange === "week" ? "active" : ""}
-              onClick={() => setTimeRange("week")}
-            >
-              This Week
-            </button>
-            <button
-              className={timeRange === "month" ? "active" : ""}
-              onClick={() => setTimeRange("month")}
-            >
-              This Month
-            </button>
-          </div>
         </div>
         <div className="header-right">
           <div className="current-period">
@@ -289,7 +269,7 @@ const Home = () => {
                     <tr key={order.order_id}>
                       <td>{order.order_id}</td>
                       <td>{order.location}</td>
-                      <td>{order.value.toLocaleString()} VND</td>
+                      <td>{order.value.toLocaleString()} đ</td>
                       <td>{new Date(order.timestamp).toLocaleTimeString()}</td>
                     </tr>
                   ))}

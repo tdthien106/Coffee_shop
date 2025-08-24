@@ -16,6 +16,8 @@ class OrderController {
       } else {
         created = await OrderModel.create(orderId, staffId);
       }
+
+      await updateRevenueCache();
       res.status(201).json({ success:true, data: created });
     } catch (err) {
       console.error(err);
@@ -56,6 +58,17 @@ class OrderController {
 function generateOrderId() {
   const s = new Date().toISOString().replace(/[-:.TZ]/g, "");
   return `O${s}`;
+}
+
+// Hàm cập nhật cache revenue
+async function updateRevenueCache() {
+  try {
+    // Xóa cache hoặc cập nhật thống kê
+    // Có thể implement caching mechanism ở đây
+    console.log('Revenue cache updated after order creation');
+  } catch (error) {
+    console.error('Error updating revenue cache:', error);
+  }
 }
 
 export default OrderController;

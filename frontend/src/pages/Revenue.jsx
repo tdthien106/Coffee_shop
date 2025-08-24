@@ -57,6 +57,8 @@ const Revenue = () => {
   const [productRevenue, setProductRevenue] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
 
   // giữ đúng màu như bản gốc
   const primaryColor = "#1D7DE2";
@@ -68,8 +70,7 @@ const Revenue = () => {
   // ====== EFFECT (fetch theo timeRange) ======
   useEffect(() => {
     fetchAllData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeRange]);
+  }, [timeRange, navigate, refreshTrigger]);
 
   // ====== FETCH (giữ nguyên logic Promise.all + fallback an toàn) ======
   const fetchAllData = async () => {
@@ -304,10 +305,14 @@ const Revenue = () => {
           <div className="card-content">
             <h3>Total Revenue</h3>
             <p>
-              {(keyMetrics.total_revenue || 0).toLocaleString("vi-VN", {
-                maximumFractionDigits: 0,
-              })}{" "}
-              VND
+    {keyMetrics.total_revenue !== undefined && keyMetrics.total_revenue !== null
+                    ? keyMetrics.total_revenue.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                      })
+                    : "0 ₫"}
             </p>
           </div>
         </div>
@@ -406,9 +411,6 @@ const Revenue = () => {
       <section className="chart-container revenue-table">
         <div className="table-header">
           <h2>Revenue by Product</h2>
-          <button className="export-btn">
-            <i className="fas fa-download" /> Export Report
-          </button>
         </div>
 
         <div className="table-wrapper">
