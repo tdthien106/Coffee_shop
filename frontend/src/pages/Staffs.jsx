@@ -586,7 +586,8 @@ function SchedulingView() {
     return assignment ? assignment.employeeId : '';
   };
 
-  // Xử lý thay đổi ca làm việc - chỉ cập nhật state cục bộ
+
+  // Xử lý khi thay đổi nhân viên được giao cho ca cụ thể
   const handleShiftChange = (date, shiftNumber, employeeId) => {
     const shiftID = getShiftID(date, shiftNumber);
 
@@ -617,11 +618,11 @@ function SchedulingView() {
     }
 
     setAssignments(updatedAssignments);
-    globalAssignments = updatedAssignments; // Cập nhật biến toàn cục
+    globalAssignments = updatedAssignments;
     setHasChanges(true);
   };
 
-  // Hàm lưu tất cả thay đổi (chỉ trong bộ nhớ)
+  // Hàm lưu tất cả thay đổi
   const saveAllChanges = () => {
     setHasChanges(false);
     alert('All changes have been saved locally!');
