@@ -1,7 +1,18 @@
-###Lấy tất cả các ca làm việc
+### Lấy toàn bộ shifts
+GET http://localhost:3000/api/shifts
+Content-Type: application/json
 
 
+### Lấy shift theo shiftId
+GET http://localhost:3000/api/shifts/SH_20250819_C1
+Content-Type: application/json
 
-GET http://localhost:3000/api/shifts/SH_20250822_C1
 
+### Tạo shift mới
+POST http://localhost:3000/api/shifts/create
+Content-Type: application/json
 
+{
+    "date": "2025-08-20",
+    "ca": "C1"
+}

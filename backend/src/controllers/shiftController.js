@@ -38,6 +38,39 @@ class ShiftController {
             });
         }
     }
+
+    // POST create a new shift
+    async createShift(req, res) {
+        try {
+            const { date, ca } = req.body;
+            if (!date || !ca) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Missing required fields: date and ca'
+                });
+            }
+
+            const newShift = await ShiftModel.createShift({ date, ca });
+            if (!newShift) {
+                return res.status(409).json({
+                    success: false,
+                    message: 'Shift already exists'
+                });
+            }
+
+            res.status(201).json({
+                success: true,
+                data: newShift
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
+
 }
 
 export default new ShiftController();
