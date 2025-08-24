@@ -1,4 +1,4 @@
-/* CoffeeShopRevenue.css */
+/* === Scope toàn bộ về container Revenue === */
 .coffee-revenue-container {
   max-width: 1200px;
   margin: 5px auto;
@@ -10,25 +10,24 @@
   overflow-y: auto;
 }
 
+/* Scrollbar */
 .coffee-revenue-container::-webkit-scrollbar {
   width: 8px;
 }
-
 .coffee-revenue-container::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
 }
-
 .coffee-revenue-container::-webkit-scrollbar-thumb {
   background: #ccc;
   border-radius: 10px;
 }
-
 .coffee-revenue-container::-webkit-scrollbar-thumb:hover {
   background: #aaa;
 }
 
-.coffee-revenue-header {
+/* Header */
+.coffee-revenue-container .coffee-revenue-header {
   background: linear-gradient(120deg, #1d7de2 0%, #4a96e9 100%);
   color: white;
   padding: 10px 20px;
@@ -40,32 +39,29 @@
   z-index: 100;
 }
 
-.header-content h1 {
+.coffee-revenue-container .header-content h1 {
   font-size: 28px;
   font-weight: 700;
   display: flex;
   align-items: center;
   margin-bottom: 5px;
 }
-
-.header-content h1 i {
+.coffee-revenue-container .header-content h1 i {
   margin-right: 15px;
   font-size: 32px;
 }
-
-.header-content p {
+.coffee-revenue-container .header-content p {
   opacity: 0.8;
   margin: 0;
 }
 
-.time-selector {
+.coffee-revenue-container .time-selector {
   display: flex;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   overflow: hidden;
 }
-
-.time-selector button {
+.coffee-revenue-container .time-selector button {
   padding: 10px 20px;
   border: none;
   background: transparent;
@@ -74,30 +70,29 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
-.time-selector button.active {
+.coffee-revenue-container .time-selector button.active {
   background: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: #fff;
 }
-
-.time-selector button:hover {
+.coffee-revenue-container .time-selector button:hover {
   background: rgba(255, 255, 255, 0.15);
-  color: white;
+  color: #fff;
 }
 
-.coffee-revenue-content {
+/* Content */
+.coffee-revenue-container .coffee-revenue-content {
   padding: 30px;
 }
 
-.metrics-grid {
+/* Metrics */
+.coffee-revenue-container .metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   margin-bottom: 30px;
 }
-
-.metric-card {
-  background: white;
+.coffee-revenue-container .metric-card {
+  background: #fff;
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
@@ -105,135 +100,144 @@
   border-top: 4px solid #1d7de2;
   text-align: center;
 }
-
-.metric-card:hover {
+.coffee-revenue-container .metric-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
-
-.metric-card:nth-child(2) {
+.coffee-revenue-container .metric-card:nth-child(2) {
   border-top-color: #4a96e9;
 }
-
-.metric-card:nth-child(3) {
+.coffee-revenue-container .metric-card:nth-child(3) {
   border-top-color: #7ab2ef;
 }
-
-.metric-card:nth-child(4) {
+.coffee-revenue-container .metric-card:nth-child(4) {
   border-top-color: #a3cbf5;
 }
 
-.card-content h3 {
+.coffee-revenue-container .card-content h3 {
   font-size: 14px;
   color: #7f8c8d;
   margin-bottom: 8px;
   font-weight: 600;
 }
-
-.card-content .value {
+.coffee-revenue-container .card-content .value {
   font-size: 22px;
   font-weight: 700;
   color: #2c3e50;
   margin-bottom: 5px;
 }
-
-.card-content .trend {
+.coffee-revenue-container .card-content .trend {
   font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-.trend.positive {
+.coffee-revenue-container .trend.positive {
   color: #2ecc71;
 }
-
-.trend.negative {
+.coffee-revenue-container .trend.negative {
   color: #e74c3c;
 }
 
-.charts-container {
+/* Charts grid */
+.coffee-revenue-container .charts-container {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 20px;
   margin-bottom: 20px;
 }
-
-.chart-card {
-  background: white;
+.coffee-revenue-container .chart-card {
+  background: #fff;
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
-
-.main-chart {
+.coffee-revenue-container .main-chart {
   grid-column: 1 / 3;
 }
 
-.chart-header {
+/* Header trong card */
+.coffee-revenue-container .chart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
-
-.chart-header h2 {
+.coffee-revenue-container .chart-header h2 {
   font-size: 18px;
   color: #2c3e50;
   font-weight: 700;
 }
 
-.chart-legend {
+.coffee-revenue-container .chart-legend {
   display: flex;
   gap: 15px;
 }
-
-.legend-item {
+.coffee-revenue-container .legend-item {
   display: flex;
   align-items: center;
   gap: 5px;
   font-size: 14px;
 }
-
-.legend-color {
+.coffee-revenue-container .legend-color {
   width: 12px;
   height: 12px;
   border-radius: 50%;
 }
-
-.revenue-color {
+.coffee-revenue-container .revenue-color {
   background: #1d7de2;
 }
 
-.chart-container {
-  height: 250px;
+/* === Quan trọng: reset rò rỉ từ Home.css === */
+.coffee-revenue-container .chart-container {
+  /* Home.css có .chart-container { width:50%; padding:10px; box-shadow ... } */
+  width: 100% !important; /* đảm bảo không bị 50% */
+  padding: 0 !important; /* padding để dành cho .chart-card */
+  box-shadow: none !important; /* shadow đã ở .chart-card */
+  background: transparent !important;
+  border-radius: 0 !important;
+
+  height: 250px; /* đúng theo thiết kế Revenue */
   position: relative;
 }
 
-.revenue-table {
-  background: white;
+/* Table */
+.coffee-revenue-container .revenue-table {
+  background: #fff;
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
   margin-top: 20px;
 }
 
-.table-header {
+.revenue-table{
+  width: 50%;
+  position: relative;
+  left: 52%;
+  top: -210px;
+  background-color: white;
+  height: 210px;
+}
+
+.chart-container.revenue-table .table-header{
+  display: flex;
+  justify-content: space-between;
+
+}
+.coffee-revenue-container .table-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
-
-.table-header h2 {
+.coffee-revenue-container .table-header h2 {
   font-size: 18px;
   color: #2c3e50;
   font-weight: 700;
 }
-
-.export-btn {
+.coffee-revenue-container .export-btn {
   background: #1d7de2;
-  color: white;
+  color: #fff;
   border: none;
   padding: 8px 15px;
   border-radius: 8px;
@@ -245,65 +249,47 @@
   transition: background 0.3s ease;
   font-size: 14px;
 }
-
-.export-btn:hover {
+.coffee-revenue-container .export-btn:hover {
   background: #1560bd;
 }
 
-table {
+.coffee-revenue-container table {
   width: 100%;
   border-collapse: collapse;
 }
-
-th,
-td {
+.coffee-revenue-container th,
+.coffee-revenue-container td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ecf0f1;
 }
-
-th {
+.coffee-revenue-container th {
   color: #7f8c8d;
   font-weight: 600;
   font-size: 14px;
 }
-
-td {
+.coffee-revenue-container td {
   color: #2c3e50;
   font-weight: 500;
 }
-
-tr:hover {
-  background-color: #f5f9ff;
+.coffee-revenue-container tr:hover {
+  background: #f5f9ff;
 }
-
-.menu-item {
+.coffee-revenue-container .menu-item {
   font-weight: 600;
 }
 
-.trend-indicator {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.positive {
-  color: #2ecc71;
-}
-
-.negative {
-  color: #e74c3c;
-}
-
-.loading-indicator {
+/* Loading / Error */
+.coffee-revenue-container .loading-indicator,
+.coffee-revenue-container .error-message {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 300px;
+  text-align: center;
 }
-
-.coffee-spinner {
+.coffee-revenue-container .coffee-spinner {
   width: 50px;
   height: 50px;
   border: 3px solid #e6f0ff;
@@ -312,91 +298,26 @@ tr:hover {
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
 }
-
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
+  from {
+    transform: rotate(0);
   }
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.metric-card,
-.chart-card,
-.revenue-table {
-  animation: fadeIn 0.5s ease-out;
-}
-
-@media (max-width: 1250px) {
-  .coffee-revenue-container {
-    width: 95%;
-    margin: 10px auto;
-  }
-
-  .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .charts-container {
-    grid-template-columns: 1fr;
-  }
-
-  .main-chart {
-    grid-column: 1;
-  }
-}
-
-@media (max-width: 768px) {
-  .coffee-revenue-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 15px;
-  }
-
-  .header-content h1 {
-    justify-content: center;
-  }
-
-  .metrics-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.error-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 300px;
-  text-align: center;
-  color: #e74c3c;
-}
-
-.error-message i {
+.coffee-revenue-container .error-message i {
   font-size: 48px;
   margin-bottom: 20px;
 }
-
-.error-message h3 {
+.coffee-revenue-container .error-message h3 {
   margin-bottom: 10px;
   color: #e74c3c;
 }
-
-.retry-btn {
+.coffee-revenue-container .retry-btn {
   background: #1d7de2;
-  color: white;
+  color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
@@ -407,7 +328,53 @@ tr:hover {
   gap: 8px;
   margin-top: 20px;
 }
-
-.retry-btn:hover {
+.coffee-revenue-container .retry-btn:hover {
   background: #1560bd;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.coffee-revenue-container .metric-card,
+.coffee-revenue-container .chart-card,
+.coffee-revenue-container .revenue-table {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 1250px) {
+  .coffee-revenue-container {
+    width: 95%;
+    margin: 10px auto;
+  }
+  .coffee-revenue-container .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .coffee-revenue-container .charts-container {
+    grid-template-columns: 1fr;
+  }
+  .coffee-revenue-container .main-chart {
+    grid-column: 1;
+  }
+}
+@media (max-width: 768px) {
+  .coffee-revenue-container .coffee-revenue-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  .coffee-revenue-container .header-content h1 {
+    justify-content: center;
+  }
+  .coffee-revenue-container .metrics-grid {
+    grid-template-columns: 1fr;
+  }
 }

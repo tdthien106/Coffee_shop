@@ -215,7 +215,7 @@ const goPayment = () => {
         {/* LEFT */}
         <div className="orders-left">
           <header className="orders-header">
-            <div className="title">MAT COFFEE SHOP</div>
+            <div className="title">GROUP 06 Order</div>
             <div className="search">
               <input
                 value={q}
@@ -243,7 +243,7 @@ const goPayment = () => {
           ) : err ? (
             <div className="p err">{err}</div>
           ) : (
-            <div className="grid">
+            <div className="grid order">
               {filtered.map((m) => (
                 <div
                   key={m.item_id}
@@ -276,19 +276,7 @@ const goPayment = () => {
               <div className="label">ORDER #</div>
               <div className="id dim">Tự sinh khi thanh toán</div>
             </div>
-            <div className="info-line">
-              <span>👥</span>&nbsp;
-              <input
-                className="mini"
-                type="number"
-                min={1}
-                value={guests}
-                onChange={(e) => setGuests(Number(e.target.value || 1))}
-              />
-              &nbsp;&nbsp;
-              <span>🪑 Table</span>&nbsp;
-              <input className="mini" value={table} onChange={(e) => setTable(e.target.value)} />
-            </div>
+            
           </div>
 
           <div className="cart">

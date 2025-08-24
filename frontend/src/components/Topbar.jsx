@@ -35,7 +35,7 @@ export default function Topbar() {
     <>
       <header className="topbar">
         <button className="back" title="Back" onClick={() => nav(-1)}>←</button>
-        <div className="brand">MAT COFFEE</div>
+        <div className="brand">GROUP 06</div>
 
         <div className="topbar-right">
           <span className="avatar-dot" aria-hidden />

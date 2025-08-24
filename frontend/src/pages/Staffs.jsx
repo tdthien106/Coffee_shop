@@ -12,14 +12,20 @@ const STORES = [
 export default function Staffs() {
   const [tab, setTab] = useState("Find");
   return (
-    <section className="card">
-      <div className="tabs">
-        {["Find","Add","Salary","Scheduling"].map(t=>(
-          <button key={t} className={"tab"+(tab===t?" active":"")} onClick={()=>setTab(t)}>
-            {t==="Find"?"Find staff":t==="Add"?"Add staff":t}
-          </button>
-        ))}
+    <section className="card no-hover" >
+      <div className="card-header">
+          <div className="title">GROUP 06 Staffs</div>
+          <div className="tabs staffs">
+              {["Find","Add","Salary","Scheduling"].map(t=>(
+                  <button key={t} className={"tab staffs"+(tab===t?" active":"")} onClick={()=>setTab(t)}>
+                    {t==="Find"?"Find staff":t==="Add"?"Add staff":t}
+                  </button>
+                ))}
+          </div>
       </div>
+
+
+ 
       {tab==="Find" && <FindStaff />}
       {tab==="Add" && <AddStaff />}
       {tab==="Salary" && <SalaryView />}
@@ -210,7 +216,7 @@ const onDelete = async () => {
         onChange={e => setSearch(e.target.value)}
         onKeyDown={e => { if (e.key === "Enter") onSearch(); }}
       />
-      <button className="btn" onClick={onSearch} disabled={loading}>Tìm kiếm</button>
+      <button className="btn staffs" onClick={onSearch} disabled={loading}>Tìm kiếm</button>
     </div>
 
       {loading && <div style={{marginTop:16, color:'#888'}}>Đang tải...</div>}
@@ -243,7 +249,7 @@ const onDelete = async () => {
           </div>
           <div className="actions">
             {!editable
-              ? <button className="btn outline" onClick={()=>setEditable(true)}>Edit</button>
+              ? <button className="btn outline staffs" onClick={()=>setEditable(true)}>Edit</button>
               : <button className="btn primary" onClick={onSave} disabled={loading}>Save</button>}
             <button className="btn danger" onClick={onDelete} disabled={loading}>Delete</button>
           </div>
@@ -827,295 +833,7 @@ function SchedulingView() {
         </div>
       )}
 
-      <style jsx>{`
-        .panel {
-          padding: 20px;
-          background-color: #f5f7fa;
-        }
-        
-        .store-list {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 20px;
-        }
-        
-        .store-card {
-          background: white;
-          border-radius: 12px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-          padding: 20px;
-          cursor: pointer;
-          transition: transform 0.2s, box-shadow 0.2s;
-          border: 1px solid #e1e5eb;
-        }
-        
-        .store-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-        }
-        
-        .store-header {
-          display: flex;
-          align-items: center;
-          margin-bottom: 15px;
-        }
-        
-        .store-icon {
-          font-size: 24px;
-          margin-right: 12px;
-        }
-        
-        .store-name {
-          font-weight: 600;
-          font-size: 18px;
-          color: #2c3e50;
-          flex: 1;
-        }
-        
-        .store-compare {
-          font-size: 14px;
-          color: #27ae60;
-          background-color: #e8f5e9;
-          padding: 4px 8px;
-          border-radius: 16px;
-        }
-        
-        .store-details {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-        
-        .detail-item {
-          display: flex;
-          justify-content: space-between;
-          font-size: 14px;
-        }
-        
-        .label {
-          color: #7f8c8d;
-        }
-        
-        .value {
-          font-weight: 600;
-          color: #2c3e50;
-        }
-        
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-          padding: 20px;
-        }
-        
-        .modal-container {
-          background: white;
-          border-radius: 12px;
-          width: 100%;
-          max-width: 1400px;
-          max-height: 90vh;
-          overflow: hidden;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 20px 24px;
-          background: #3498db;
-          color: white;
-        }
-        
-        .modal-title {
-          margin: 0;
-          font-size: 20px;
-          font-weight: 600;
-        }
-        
-        .close-btn {
-          background: none;
-          border: none;
-          color: white;
-          font-size: 24px;
-          cursor: pointer;
-          width: 32px;
-          height: 32px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          transition: background-color 0.2s;
-        }
-        
-        .close-btn:hover {
-          background-color: rgba(255, 255, 255, 0.2);
-        }
-        
-        .modal-content {
-          padding: 24px;
-          max-height: calc(90vh - 80px);
-          overflow-y: auto;
-        }
-        
-        .schedule-toolbar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 24px;
-          padding-bottom: 16px;
-          border-bottom: 1px solid #e1e5eb;
-        }
-        
-        .week-navigator {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        
-        .nav-btn {
-          background: #3498db;
-          color: white;
-          border: none;
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          font-weight: bold;
-          transition: background-color 0.2s;
-        }
-        
-        .nav-btn:hover {
-          background: #2980b9;
-        }
-        
-        .week-display {
-          font-weight: 600;
-          color: #2c3e50;
-          font-size: 16px;
-        }
-        
-        .save-btn {
-          background: #27ae60;
-          color: white;
-          border: none;
-          padding: 10px 20px;
-          border-radius: 6px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-        
-        .save-btn:hover {
-          background: #219653;
-        }
-        
-        .schedule-table-container {
-          overflow-x: auto;
-          border-radius: 8px;
-          border: 1px solid #e1e5eb;
-        }
-        
-        .schedule-table {
-          width: 100%;
-          border-collapse: collapse;
-          background: white;
-        }
-        
-        .schedule-table th, .schedule-table td {
-          padding: 12px;
-          text-align: center;
-        }
-        
-        .shift-header, .day-header {
-          background: #f8f9fa;
-          font-weight: 600;
-          color: #2c3e50;
-        }
-        
-        .day-header {
-          min-width: 120px;
-        }
-        
-        .day-name {
-          font-size: 16px;
-          margin-bottom: 4px;
-        }
-        
-        .day-date {
-          font-size: 14px;
-          color: #7f8c8d;
-        }
-        
-        .shift-info {
-          background: #f8f9fa;
-          text-align: left;
-          min-width: 100px;
-        }
-        
-        .shift-title {
-          font-weight: 600;
-          color: #2c3e50;
-          margin-bottom: 4px;
-        }
-        
-        .shift-time {
-          font-size: 12px;
-          color: #7f8c8d;
-        }
-        
-        .shift-row {
-          border-bottom: 1px solid #e1e5eb;
-        }
-        
-        .shift-row:last-child {
-          border-bottom: none;
-        }
-        
-        .shift-cell {
-          background: white;
-        }
-        
-        .staff-selector {
-          width: 100%;
-          padding: 8px;
-          border: 1px solid #dce1e6;
-          border-radius: 6px;
-          background: white;
-          color: #2c3e50;
-          font-size: 14px;
-          cursor: pointer;
-          transition: border-color 0.2s;
-        }
-        
-        .staff-selector:focus {
-          outline: none;
-          border-color: #3498db;
-          box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        @media (max-width: 768px) {
-          .schedule-toolbar {
-            flex-direction: column;
-            gap: 16px;
-            align-items: flex-start;
-          }
-          
-          .store-list {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
+  
     </>
   );
 }

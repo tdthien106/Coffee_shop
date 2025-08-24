@@ -208,7 +208,7 @@ export const getDashboardStats = async (req, res) => {
     // ---------- RESPONSE ----------
     const response = {
       storeInfo: {
-        name: "MAT COFFEE SHOP",
+        name: "GROUP 06",
         currentStore: "HotMédecine",
         period: `${formatDate(startDate)} to ${formatDate(endDate)}`,
       },

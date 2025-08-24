@@ -166,60 +166,9 @@ export default function ExportPage() {
 
   return (
     <div className="exp-wrap">
-      <style>{`
-        .exp-wrap{ padding:28px; background:transparent; min-height:100%; width:100% }
-        .exp-title{font-size:22px;font-weight:800;color:#1f2937;margin:0 0 12px}
-        .exp-toolbar{display:flex;gap:8px;margin-bottom:10px}
-        .exp-btn{
-          display:inline-flex;align-items:center;gap:8px;
-          padding:6px 10px;border-radius:6px;border:1px solid #bfc5cc;
-          background:#f2f4f7;box-shadow:0 1px 0 rgba(0,0,0,.15), inset 0 1px 0 #fff;
-          font-weight:700;font-size:12px;cursor:pointer;color:#111;
-        }
-        .exp-btn--green{background:#e9f7ea;border-color:#a6d7a6;color:#276a2b}
-        .exp-btn svg{width:14px;height:14px;flex:0 0 14px}
+   
 
-        .exp-card{ background:transparent; border:none; border-radius:0; box-shadow:none; width:100% }
-
-        .exp-table{width:100%;max-width:none;border-collapse:collapse;font-size:13.5px;background:#fff}
-        .exp-th{
-          background:#f3f4f6;color:#333;text-align:left;font-weight:800;padding:10px;
-          border:1px solid #d2d6dc;
-        }
-        .exp-td{padding:10px;border:1px solid #e5e7eb;background:#fff}
-        .exp-tr:hover .exp-td{background:#fafafa}
-
-        .exp-dl{
-          display:inline-flex;align-items:center;gap:6px;
-          padding:4px 8px;border:1px solid #bfbfbf;border-radius:6px;background:#f0f0f0;
-          font-size:12px;font-weight:700;box-shadow:0 1px 0 rgba(0,0,0,.18), inset 0 1px 0 #fff;cursor:pointer
-        }
-        .exp-dl svg{width:12px;height:12px;flex:0 0 12px}
-
-        .exp-foot{display:flex;align-items:center;justify-content:space-between;background:transparent;padding:8px 0}
-        .exp-chip{
-          padding:4px 8px;border:1px solid #bfc5cc;border-radius:6px;background:#ececec;
-          font-weight:700;font-size:12px;box-shadow:inset 0 1px 0 #fff, 0 1px 0 rgba(0,0,0,.15);cursor:pointer;margin-right:6px
-        }
-        .exp-chip.active{background:#fff}
-        .exp-pager{display:flex;align-items:center;gap:8px}
-        .exp-pager .exp-chip{margin-right:0;padding:6px 10px}
-
-        .exp-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;z-index:50}
-        .exp-modal{width:min(520px,92vw);background:#fff;border:1px solid #cfd3da;border-radius:10px;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.35)}
-        .exp-modal-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #dcdcdc;background:#f6f7f9}
-        .exp-modal-body{padding:12px}
-        .exp-modal-body label{display:block;font-size:13px;color:#555;margin:8px 0 6px}
-        .exp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-        .exp-input,.exp-select{width:100%;padding:8px 10px;border:1px solid #bfc5cc;border-radius:8px;background:#fff}
-        .exp-modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:10px 12px;border-top:1px solid #dcdcdc;background:#f6f7f9}
-
-        .exp-th, .exp-td { padding: 10px; border: 1px solid #e5e7eb; }
-        .exp-col-num { text-align: center; width: 50px }
-        .exp-col-cat, .exp-col-date, .exp-col-dl { text-align: center; }
-      `}</style>
-
-      <h1 className="exp-title">Export data</h1>
+      <h1 className="exp-title">GROUP 06 Export</h1>
       <div className="exp-toolbar">
         <button className="exp-btn" onClick={() => setOpenModal(true)}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
